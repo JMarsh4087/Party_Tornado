@@ -1,3 +1,9 @@
+const submitBtn = document.getElementById('submit-votes');
+const pickBtn = document.getElementById('pick-random');
+const resultsDiv = document.getElementById('results');
+const finalChoiceDiv = document.getElementById('final-choice');
+const container = document.getElementById('options-container');
+
 const POINTS = { 1: 10, 2: 7, 3: 4 };
 const votes = {};
 const userId = "user-" + Math.random().toString(36).substring(2, 8); // Random anonymous ID
@@ -28,12 +34,6 @@ submitBtn.onclick = () => {
     });
 };
 
-const submitBtn = document.getElementById('submit-votes');
-const pickBtn = document.getElementById('pick-random');
-const resultsDiv = document.getElementById('results');
-const finalChoiceDiv = document.getElementById('final-choice');
-
-const container = document.getElementById('options-container');
 function renderOptions() {
   console.log(container);
   if (!container) {
