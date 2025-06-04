@@ -25,13 +25,19 @@ submitBtn.onclick = () => {
     alert("Please rank exactly 3 different options.");
     return;
   }
+  console.log("Submitting vote:", votes);
 
-  firebase.database().ref("votes/" + userId).set(voteData)
-    .then(() => {
-      alert("Vote submitted!");
-      submitBtn.disabled = true;
-      pickBtn.disabled = false;
-    });
+firebase.database().ref("votes/" + userId).set(votes)
+  .then(() => {
+    console.log("Vote successfully saved.");
+    alert("Vote submitted!");
+    submitBtn.disabled = true;
+    pickBtn.disabled = false;
+  })
+  .catch(error => {
+    console.error("Error writing to Firebase:", error);
+    alert("Failed to save vote.");
+  });
 };
 
 function renderOptions() {
@@ -59,17 +65,19 @@ function renderOptions() {
 }
 
 function getVotes() {
-  const selects = document.querySelectorAll('select');
-  votes = {}; // reset votes object
+  // Instead of: votes = {};
+  Object.keys(votes).forEach(key => delete votes[key]);
 
+  const selects = document.querySelectorAll('select');
   selects.forEach(select => {
     const value = parseInt(select.value);
     const index = parseInt(select.dataset.index);
-    if (value === 1 || value === 2 || value === 3) {
+    if ([1, 2, 3].includes(value)) {
       votes[index] = value;
     }
   });
 }
+
 
 submitBtn.onclick = () => {
   getVotes();
