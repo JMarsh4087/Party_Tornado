@@ -1,4 +1,5 @@
 const POINTS = { 1: 10, 2: 7, 3: 4 };
+const votes = {};
 const userId = "user-" + Math.random().toString(36).substring(2, 8); // Random anonymous ID
 
 submitBtn.onclick = () => {
@@ -52,6 +53,8 @@ function renderOptions() {
 
 function getVotes() {
   const selects = document.querySelectorAll('select');
+  votes = {}; // reset votes object
+
   selects.forEach(select => {
     const value = parseInt(select.value);
     const index = parseInt(select.dataset.index);
@@ -60,6 +63,27 @@ function getVotes() {
     }
   });
 }
+
+submitBtn.onclick = () => {
+  getVotes();
+
+  const ranks = Object.values(votes);
+  if (ranks.length !== 3 || new Set(ranks).size !== 3) {
+    alert("Please assign unique ranks 1, 2, and 3.");
+    return;
+  }
+
+  // Save votes to Firebase
+  firebase.database().ref("votes/" + userId).set(votes)
+    .then(() => {
+      alert("Vote submitted!");
+      submitBtn.disabled = true;
+      pickBtn.disabled = false;
+    })
+    .catch(error => {
+      alert("Error saving votes: " + error.message);
+    });
+};
 
 function isValidVotes() {
   const ranks = Object.values(votes);
