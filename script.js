@@ -28,13 +28,20 @@ submitBtn.onclick = () => {
     });
 };
 
-const container = document.getElementById('options-container');
 const submitBtn = document.getElementById('submit-votes');
 const pickBtn = document.getElementById('pick-random');
 const resultsDiv = document.getElementById('results');
 const finalChoiceDiv = document.getElementById('final-choice');
 
+const container = document.getElementById('options-container');
 function renderOptions() {
+  console.log(container);
+  if (!container) {
+    console.error("Options container not found!");
+    return;
+  }
+  console.log("Rendering Options");
+  container.innerHTML = ''; // Clear previous content
   OPTIONS.forEach((option, i) => {
     const div = document.createElement('div');
     div.className = 'option';
