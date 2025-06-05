@@ -15,11 +15,16 @@ const loginStatusSpan = document.getElementById('login-status');
 const clearVotesBtn = document.getElementById('clear-votes-btn');
 const adminLogoutBtn = document.getElementById('admin-logout-btn');
 const loginFormDiv = document.getElementById('login-form');
+const adminUID = 'J8RixVVu3pQcmqwnq94AeoHm5WM2'; 
 
 // Constants
 const POINTS = { 1: 10, 2: 7, 3: 4 };
 const votes = {};
-const userId = "user-" + Math.random().toString(36).substring(2, 8);
+let userId = localStorage.getItem("userId");
+if (!userId) {
+  userId = "user-" + Math.random().toString(36).substring(2, 8);
+  localStorage.setItem("userId", userId);
+}
 
 // Render voting options
 function renderOptions() {
@@ -138,6 +143,20 @@ adminLoginBtn.onclick = () => {
       loginStatusSpan.textContent = "Login failed: " + error.message;
     });
 };
+
+auth.signInWithEmailAndPassword(email, password)
+  .then((userCredential) => {
+    if (userCredential.user.uid === adminUID) {
+      loginStatusSpan.textContent = "Logged in!";
+      loginFormDiv.style.display = "none";
+      clearVotesBtn.style.display = "inline";
+      adminLogoutBtn.style.display = "inline";
+      clearVotesBtn.disabled = false;
+    } else {
+      loginStatusSpan.textContent = "Access denied: Not an admin.";
+      auth.signOut();
+    }
+  })
 
 // Clear all votes (admin)
 clearVotesBtn.onclick = () => {
