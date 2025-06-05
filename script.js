@@ -6,48 +6,10 @@ const container = document.getElementById('options-container');
 
 const POINTS = { 1: 10, 2: 7, 3: 4 };
 const votes = {};
-const userId = "user-" + Math.random().toString(36).substring(2, 8); // Random anonymous ID
-
-submitBtn.onclick = () => {
-  const voteData = {};
-  const selects = document.querySelectorAll('select');
-
-  selects.forEach(select => {
-    const value = parseInt(select.value);
-    const index = parseInt(select.dataset.index);
-    if (value >= 1 && value <= 3) {
-      voteData[index] = value;
-    }
-  });
-
-  const ranks = Object.values(voteData);
-  if (new Set(ranks).size !== 3) {
-    alert("Please rank exactly 3 different options.");
-    return;
-  }
-  console.log("Submitting vote:", votes);
-
-firebase.database().ref("votes/" + userId).set(votes)
-  .then(() => {
-    console.log("Vote successfully saved.");
-    alert("Vote submitted!");
-    submitBtn.disabled = true;
-    pickBtn.disabled = false;
-  })
-  .catch(error => {
-    console.error("Error writing to Firebase:", error);
-    alert("Failed to save vote.");
-  });
-};
+const userId = "user-" + Math.random().toString(36).substring(2, 8);
 
 function renderOptions() {
-  console.log(container);
-  if (!container) {
-    console.error("Options container not found!");
-    return;
-  }
-  console.log("Rendering Options");
-  container.innerHTML = ''; // Clear previous content
+  container.innerHTML = '';
   OPTIONS.forEach((option, i) => {
     const div = document.createElement('div');
     div.className = 'option';
@@ -65,7 +27,6 @@ function renderOptions() {
 }
 
 function getVotes() {
-  // Instead of: votes = {};
   Object.keys(votes).forEach(key => delete votes[key]);
 
   const selects = document.querySelectorAll('select');
@@ -78,31 +39,9 @@ function getVotes() {
   });
 }
 
-
-submitBtn.onclick = () => {
-  getVotes();
-
-  const ranks = Object.values(votes);
-  if (ranks.length !== 3 || new Set(ranks).size !== 3) {
-    alert("Please assign unique ranks 1, 2, and 3.");
-    return;
-  }
-
-  // Save votes to Firebase
-  firebase.database().ref("votes/" + userId).set(votes)
-    .then(() => {
-      alert("Vote submitted!");
-      submitBtn.disabled = true;
-      pickBtn.disabled = false;
-    })
-    .catch(error => {
-      alert("Error saving votes: " + error.message);
-    });
-};
-
 function isValidVotes() {
   const ranks = Object.values(votes);
-  return new Set(ranks).size === 3; // Only 3 unique ranks allowed
+  return ranks.length === 3 && new Set(ranks).size === 3;
 }
 
 function showResults(scoreMap) {
@@ -127,6 +66,7 @@ function pickWeightedRandom(scoreMap) {
   return null;
 }
 
+// ✅ Vote submission
 submitBtn.onclick = () => {
   getVotes();
 
@@ -135,52 +75,48 @@ submitBtn.onclick = () => {
     return;
   }
 
-  const scoreMap = {};
-  for (let [i, rank] of Object.entries(votes)) {
-    scoreMap[i] = (scoreMap[i] || 0) + POINTS[rank];
-  }
+  // Save vote to Firebase
+  firebase.database().ref("votes/" + userId).set(votes)
+    .then(() => {
+      alert("Vote submitted!");
+      submitBtn.disabled = true;
+      pickBtn.disabled = false;
 
-  showResults(scoreMap);
-  pickBtn.disabled = false;
-};
-
-pickBtn.onclick = () => {
-  firebase.database().ref("votes").once("value", snapshot => {
-    const allVotes = snapshot.val();
-    const scoreMap = {};
-
-    for (let user in allVotes) {
-      const userVotes = allVotes[user];
-      for (let i in userVotes) {
-        const rank = userVotes[i];
+      // Optional: display local result immediately
+      const scoreMap = {};
+      for (let [i, rank] of Object.entries(votes)) {
         scoreMap[i] = (scoreMap[i] || 0) + POINTS[rank];
       }
-    }
+      showResults(scoreMap);
+    })
+    .catch(error => {
+      alert("Error saving votes: " + error.message);
+    });
+};
 
-    showResults(scoreMap);
+// ✅ Pick random winner
+pickBtn.onclick = () => {
+  firebase.database().ref("votes").once("value")
+    .then(snapshot => {
+      const allVotes = snapshot.val();
+      const scoreMap = {};
 
-    const choice = pickWeightedRandom(scoreMap);
-    finalChoiceDiv.innerHTML = `<h2>🎉 Final Pick: ${OPTIONS[choice]} 🎉</h2>`;
-  });
+      for (let user in allVotes) {
+        const userVotes = allVotes[user];
+        for (let i in userVotes) {
+          const rank = userVotes[i];
+          scoreMap[i] = (scoreMap[i] || 0) + POINTS[rank];
+        }
+      }
+
+      showResults(scoreMap);
+
+      const choice = pickWeightedRandom(scoreMap);
+      finalChoiceDiv.innerHTML = `<h2>🎉 Final Pick: ${OPTIONS[choice]} 🎉</h2>`;
+    })
+    .catch(error => {
+      alert("Error reading votes: " + error.message);
+    });
 };
 
 renderOptions();
-
-/*// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCUslqFnWcO7pl7WCIzsIJ-gQa0elCpJT4",
-  authDomain: "party-tornado.firebaseapp.com",
-  projectId: "party-tornado",
-  storageBucket: "party-tornado.firebasestorage.app",
-  messagingSenderId: "294712968263",
-  appId: "1:294712968263:web:0ad47c9333fc08d7031d62"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-*/

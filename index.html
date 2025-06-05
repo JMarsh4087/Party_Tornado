@@ -16,25 +16,29 @@
   <div id="results"></div>
   <div id="final-choice"></div>
 
+  <!-- Option list -->
   <script src="options.js"></script>
+
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCUslqFnWcO7pl7WCIzsIJ-gQa0elCpJT4",
-    authDomain: "party-tornado.firebaseapp.com",
-    databaseURL: "https://party-tornado-default-rtdb.firebaseio.com",
-    projectId: "party-tornado",
-    storageBucket: "party-tornado.firebasestorage.app",
-    messagingSenderId: "294712968263",
-    appId: "1:294712968263:web:0ad47c9333fc08d7031d62"
-  };
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCUslqFnWcO7pl7WCIzsIJ-gQa0elCpJT4",
+      authDomain: "party-tornado.firebaseapp.com",
+      databaseURL: "https://party-tornado-default-rtdb.firebaseio.com",
+      projectId: "party-tornado",
+      storageBucket: "party-tornado.appspot.com",
+      messagingSenderId: "294712968263",
+      appId: "1:294712968263:web:0ad47c9333fc08d7031d62"
+    };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-</script>
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
+  <!-- App logic -->
   <script src="script.js"></script>
 </body>
 </html>
