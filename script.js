@@ -67,9 +67,18 @@ function isValidVotes() {
 
 // Display results
 function showResults(scoreMap) {
-resultsDiv.innerHTML = "<h3>Vote Totals:</h3><ul class='vote-results'>" +
-  OPTIONS.map((opt, i) => `<li>${opt}: ${scoreMap[i] || 0} points</li>`).join('') +
-  "</ul>";
+  const ranked = Object.entries(scoreMap)
+    .sort((a, b) => b[1] - a[1]); // sort descending by score
+
+  const listItems = ranked.map(([index, score], i) => {
+    let cls = '';
+    if (i === 0) cls = 'first';
+    else if (i === 1) cls = 'second';
+    else if (i === 2) cls = 'third';
+    return `<li class="${cls}">${OPTIONS[index]}: ${score} points</li>`;
+  });
+
+  resultsDiv.innerHTML = `<h3>Vote Totals:</h3><ul class="vote-results">${listItems.join('')}</ul>`;
 }
 
 // Pick weighted random choice
