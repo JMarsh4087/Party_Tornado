@@ -132,12 +132,17 @@ adminLoginBtn.onclick = () => {
   const password = adminPasswordInput.value;
 
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      loginStatusSpan.textContent = "Logged in!";
-      loginFormDiv.style.display = "none";
-      clearVotesBtn.style.display = "inline";
-      adminLogoutBtn.style.display = "inline";
-      clearVotesBtn.disabled = false;
+    .then((userCredential) => {
+      if (userCredential.user.uid === adminUID) {
+        loginStatusSpan.textContent = "Logged in!";
+        loginFormDiv.style.display = "none";
+        clearVotesBtn.style.display = "inline";
+        adminLogoutBtn.style.display = "inline";
+        clearVotesBtn.disabled = false;
+      } else {
+        loginStatusSpan.textContent = "Access denied: Not an admin.";
+        auth.signOut();
+      }
     })
     .catch((error) => {
       loginStatusSpan.textContent = "Login failed: " + error.message;
@@ -147,9 +152,14 @@ adminLoginBtn.onclick = () => {
 // Clear all votes (admin)
 clearVotesBtn.onclick = () => {
   if (confirm("Are you sure you want to clear all votes?")) {
-    database.ref("votes").remove();
-    alert("All votes cleared.");
-    finalChoiceDiv.innerHTML = "";
+    database.ref("votes").remove()
+      .then(() => {
+        alert("All votes cleared.");
+        finalChoiceDiv.innerHTML = "";
+      })
+      .catch((error) => {
+        alert("Error clearing votes: " + error.message);
+      });
   }
 };
 
