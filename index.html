@@ -16,25 +16,6 @@
   <div id="results"></div>
   <div id="final-choice"></div>
 
-  <!-- Option list -->
-  <script src="options.js"></script>
-
-  <script>
-    // Your Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCUslqFnWcO7pl7WCIzsIJ-gQa0elCpJT4",
-      authDomain: "party-tornado.firebaseapp.com",
-      databaseURL: "https://party-tornado-default-rtdb.firebaseio.com",
-      projectId: "party-tornado",
-      storageBucket: "party-tornado.appspot.com",
-      messagingSenderId: "294712968263",
-      appId: "1:294712968263:web:0ad47c9333fc08d7031d62"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-  </script>
-    </div> <!-- existing final-choice div -->
-
   <div id="admin-controls" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px;">
     <h3>Admin Controls</h3>
     <div id="login-form">
@@ -47,24 +28,29 @@
     <button id="admin-logout-btn" style="display: none;">Logout</button>
   </div>
 
-  <!-- ... rest of your HTML ... -->
-  <!-- Make sure firebase auth SDK is also included -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
+  <!-- Firebase Configuration -->
   <script>
-    // Your Firebase configuration - already there
-    // firebase.initializeApp(firebaseConfig); - already there
-    // You might want to get auth and database instances here
-    const auth = firebase.auth();
-    const database = firebase.database();
+    const firebaseConfig = {
+      apiKey: "AIzaSyCUslqFnWcO7pl7WCIzsIJ-gQa0elCpJT4",
+      authDomain: "party-tornado.firebaseapp.com",
+      databaseURL: "https://party-tornado-default-rtdb.firebaseio.com",
+      projectId: "party-tornado",
+      storageBucket: "party-tornado.appspot.com",
+      messagingSenderId: "294712968263",
+      appId: "1:294712968263:web:0ad47c9333fc08d7031d62"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
   </script>
 
-  <!-- App logic -->
-  <script src="script.js"></script>
-
-  <!-- App logic -->
+  <!-- Application Scripts -->
+  <script src="options.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

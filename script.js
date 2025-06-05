@@ -1,13 +1,27 @@
+// Firebase references
+const auth = firebase.auth();
+const database = firebase.database();
+
+// DOM elements
 const submitBtn = document.getElementById('submit-votes');
 const pickBtn = document.getElementById('pick-random');
 const resultsDiv = document.getElementById('results');
 const finalChoiceDiv = document.getElementById('final-choice');
 const container = document.getElementById('options-container');
+const adminEmailInput = document.getElementById('admin-email');
+const adminPasswordInput = document.getElementById('admin-password');
+const adminLoginBtn = document.getElementById('admin-login-btn');
+const loginStatusSpan = document.getElementById('login-status');
+const clearVotesBtn = document.getElementById('clear-votes-btn');
+const adminLogoutBtn = document.getElementById('admin-logout-btn');
+const loginFormDiv = document.getElementById('login-form');
 
+// Constants
 const POINTS = { 1: 10, 2: 7, 3: 4 };
 const votes = {};
 const userId = "user-" + Math.random().toString(36).substring(2, 8);
 
+// Render voting options
 function renderOptions() {
   container.innerHTML = '';
   OPTIONS.forEach((option, i) => {
@@ -26,6 +40,7 @@ function renderOptions() {
   });
 }
 
+// Get user votes
 function getVotes() {
   Object.keys(votes).forEach(key => delete votes[key]);
 
@@ -39,142 +54,111 @@ function getVotes() {
   });
 }
 
+// Validate votes
 function isValidVotes() {
   const ranks = Object.values(votes);
   return ranks.length === 3 && new Set(ranks).size === 3;
 }
 
+// Display results
 function showResults(scoreMap) {
   resultsDiv.innerHTML = "<h3>Vote Totals:</h3><ul>" +
     OPTIONS.map((opt, i) => `<li>${opt}: ${scoreMap[i] || 0} points</li>`).join('') +
     "</ul>";
 }
 
+// Pick weighted random choice
 function pickWeightedRandom(scoreMap) {
-  const indexes = Object.keys(scoreMap);
-  const weights = indexes.map(i => scoreMap[i]);
-  const total = weights.reduce((sum, w) => sum + w, 0);
-  const threshold = Math.random() * total;
-
-  let cumulative = 0;
-  for (let i = 0; i < indexes.length; i++) {
-    cumulative += weights[i];
-    if (threshold < cumulative) {
-      return indexes[i];
+  const entries = Object.entries(scoreMap);
+  const total = entries.reduce((sum, [_, score]) => sum + score, 0);
+  let threshold = Math.random() * total;
+  for (const [index, score] of entries) {
+    threshold -= score;
+    if (threshold <= 0) {
+      return index;
     }
   }
   return null;
 }
 
-// ✅ Vote submission
+// Submit votes
 submitBtn.onclick = () => {
   getVotes();
-
   if (!isValidVotes()) {
-    alert("Please assign a unique rank 1, 2, and 3.");
+    alert("Please rank exactly 3 unique options.");
     return;
   }
 
-  // Save vote to Firebase
-  firebase.database().ref("votes/" + userId).set(votes)
-    .then(() => {
-      alert("Vote submitted!");
-      submitBtn.disabled = true;
-      pickBtn.disabled = false;
-
-      // Optional: display local result immediately
-      const scoreMap = {};
-      for (let [i, rank] of Object.entries(votes)) {
-        scoreMap[i] = (scoreMap[i] || 0) + POINTS[rank];
-      }
-      showResults(scoreMap);
-    })
-    .catch(error => {
-      alert("Error saving votes: " + error.message);
-    });
+  database.ref("votes/" + userId).set(votes);
+  alert("Thanks for voting!");
+  submitBtn.disabled = true;
 };
 
-// ✅ Pick random winner
-pickBtn.onclick = () => {
-  firebase.database().ref("votes").once("value")
-    .then(snapshot => {
-      const allVotes = snapshot.val();
-      const scoreMap = {};
+// Load and tally votes
+database.ref("votes").on("value", (snapshot) => {
+  const data = snapshot.val();
+  const scores = {};
 
-      for (let user in allVotes) {
-        const userVotes = allVotes[user];
-        for (let i in userVotes) {
-          const rank = userVotes[i];
-          scoreMap[i] = (scoreMap[i] || 0) + POINTS[rank];
-        }
-      }
-
-      showResults(scoreMap);
-
-      const choice = pickWeightedRandom(scoreMap);
-      finalChoiceDiv.innerHTML = `<h2>🎉 Final Pick: ${OPTIONS[choice]} 🎉</h2>`;
-    })
-    .catch(error => {
-      alert("Error reading votes: " + error.message);
-    });
-};
-
-renderOptions();
-
-const adminEmailInput = document.getElementById('admin-email');
-const adminPasswordInput = document.getElementById('admin-password');
-const adminLoginBtn = document.getElementById('admin-login-btn');
-const loginStatusSpan = document.getElementById('login-status');
-const clearVotesBtn = document.getElementById('clear-votes-btn');
-const adminLogoutBtn = document.getElementById('admin-logout-btn');
-const loginFormDiv = document.getElementById('login-form'); // Added this to toggle visibility
-
-
-// --- Firebase Initialization (already in HTML, but get references) ---
-// const auth = firebase.auth(); // Already added in the script block in HTML
-// const database = firebase.database(); // Already added in the script block in HTML
-
-// --- Authentication State Listener ---
-// Listen for changes in the authentication state
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    // User is signed in. Check if it's the admin user
-    const adminUID = 'YOUR_ADMIN_UID'; // <<< REPLACE WITH YOUR ACTUAL ADMIN UID
-
-    if (user.uid === adminUID) {
-      console.log("Admin user logged in:", user.email);
-      loginStatusSpan.textContent = `Logged in as ${user.email}`;
-      loginFormDiv.style.display = 'none'; // Hide login form
-      clearVotesBtn.style.display = 'inline-block'; // Show clear button
-      adminLogoutBtn.style.display = 'inline-block'; // Show logout button
-      clearVotesBtn.disabled = false; // Enable clear button
-    } else {
-      // Some other user logged in (this shouldn't happen if only admin logs in via this form)
-      console.log("Non-admin user logged in. Logging out.");
-      auth.signOut(); // Log them out immediately
+  for (const uid in data) {
+    const vote = data[uid];
+    for (const index in vote) {
+      const rank = vote[index];
+      const points = POINTS[rank];
+      scores[index] = (scores[index] || 0) + points;
     }
-  } else {
-    // User is signed out.
-    console.log("User logged out or not signed in.");
-    loginStatusSpan.textContent = 'Not logged in.';
-    loginFormDiv.style.display = 'block'; // Show login form
-    clearVotesBtn.style.display = 'none'; // Hide clear button
-    adminLogoutBtn.style.display = 'none'; // Hide logout button
-    clearVotesBtn.disabled = true; // Disable clear button
   }
+
+  showResults(scores);
+  pickBtn.disabled = Object.keys(scores).length === 0;
+
+  pickBtn.onclick = () => {
+    const choiceIndex = pickWeightedRandom(scores);
+    if (choiceIndex !== null) {
+      finalChoiceDiv.innerHTML = `<h3>Winner:</h3><p>${OPTIONS[choiceIndex]}</p>`;
+    } else {
+      finalChoiceDiv.innerHTML = `<p>No votes to pick from.</p>`;
+    }
+  };
 });
 
-// --- Admin Login ---
+// Admin Login
 adminLoginBtn.onclick = () => {
   const email = adminEmailInput.value;
   const password = adminPasswordInput.value;
 
-  if (email && password) {
-    auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // Signed in
-        console.log("Login successful!");
-        // The onAuthStateChanged listener will handle UI updates
-      })
-    }
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      loginStatusSpan.textContent = "Logged in!";
+      loginFormDiv.style.display = "none";
+      clearVotesBtn.style.display = "inline";
+      adminLogoutBtn.style.display = "inline";
+      clearVotesBtn.disabled = false;
+    })
+    .catch((error) => {
+      loginStatusSpan.textContent = "Login failed: " + error.message;
+    });
+};
+
+// Clear all votes (admin)
+clearVotesBtn.onclick = () => {
+  if (confirm("Are you sure you want to clear all votes?")) {
+    database.ref("votes").remove();
+    alert("All votes cleared.");
+    finalChoiceDiv.innerHTML = "";
   }
+};
+
+// Admin Logout
+adminLogoutBtn.onclick = () => {
+  auth.signOut().then(() => {
+    loginFormDiv.style.display = "block";
+    clearVotesBtn.style.display = "none";
+    adminLogoutBtn.style.display = "none";
+    loginStatusSpan.textContent = "";
+  });
+};
+
+// Initialize on load
+window.onload = () => {
+  renderOptions();
+};
