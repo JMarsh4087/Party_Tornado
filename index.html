@@ -37,6 +37,36 @@
 
     firebase.initializeApp(firebaseConfig);
   </script>
+    </div> <!-- existing final-choice div -->
+
+  <div id="admin-controls" style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px;">
+    <h3>Admin Controls</h3>
+    <div id="login-form">
+      <input type="email" id="admin-email" placeholder="Admin Email">
+      <input type="password" id="admin-password" placeholder="Admin Password">
+      <button id="admin-login-btn">Login</button>
+      <span id="login-status"></span>
+    </div>
+    <button id="clear-votes-btn" disabled style="display: none;">Clear All Votes</button>
+    <button id="admin-logout-btn" style="display: none;">Logout</button>
+  </div>
+
+  <!-- ... rest of your HTML ... -->
+  <!-- Make sure firebase auth SDK is also included -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Your Firebase configuration - already there
+    // firebase.initializeApp(firebaseConfig); - already there
+    // You might want to get auth and database instances here
+    const auth = firebase.auth();
+    const database = firebase.database();
+  </script>
+
+  <!-- App logic -->
+  <script src="script.js"></script>
 
   <!-- App logic -->
   <script src="script.js"></script>

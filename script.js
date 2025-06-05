@@ -120,3 +120,61 @@ pickBtn.onclick = () => {
 };
 
 renderOptions();
+
+const adminEmailInput = document.getElementById('admin-email');
+const adminPasswordInput = document.getElementById('admin-password');
+const adminLoginBtn = document.getElementById('admin-login-btn');
+const loginStatusSpan = document.getElementById('login-status');
+const clearVotesBtn = document.getElementById('clear-votes-btn');
+const adminLogoutBtn = document.getElementById('admin-logout-btn');
+const loginFormDiv = document.getElementById('login-form'); // Added this to toggle visibility
+
+
+// --- Firebase Initialization (already in HTML, but get references) ---
+// const auth = firebase.auth(); // Already added in the script block in HTML
+// const database = firebase.database(); // Already added in the script block in HTML
+
+// --- Authentication State Listener ---
+// Listen for changes in the authentication state
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // User is signed in. Check if it's the admin user
+    const adminUID = 'YOUR_ADMIN_UID'; // <<< REPLACE WITH YOUR ACTUAL ADMIN UID
+
+    if (user.uid === adminUID) {
+      console.log("Admin user logged in:", user.email);
+      loginStatusSpan.textContent = `Logged in as ${user.email}`;
+      loginFormDiv.style.display = 'none'; // Hide login form
+      clearVotesBtn.style.display = 'inline-block'; // Show clear button
+      adminLogoutBtn.style.display = 'inline-block'; // Show logout button
+      clearVotesBtn.disabled = false; // Enable clear button
+    } else {
+      // Some other user logged in (this shouldn't happen if only admin logs in via this form)
+      console.log("Non-admin user logged in. Logging out.");
+      auth.signOut(); // Log them out immediately
+    }
+  } else {
+    // User is signed out.
+    console.log("User logged out or not signed in.");
+    loginStatusSpan.textContent = 'Not logged in.';
+    loginFormDiv.style.display = 'block'; // Show login form
+    clearVotesBtn.style.display = 'none'; // Hide clear button
+    adminLogoutBtn.style.display = 'none'; // Hide logout button
+    clearVotesBtn.disabled = true; // Disable clear button
+  }
+});
+
+// --- Admin Login ---
+adminLoginBtn.onclick = () => {
+  const email = adminEmailInput.value;
+  const password = adminPasswordInput.value;
+
+  if (email && password) {
+    auth.signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        console.log("Login successful!");
+        // The onAuthStateChanged listener will handle UI updates
+      })
+    }
+  }
