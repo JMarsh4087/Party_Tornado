@@ -144,20 +144,6 @@ adminLoginBtn.onclick = () => {
     });
 };
 
-auth.signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    if (userCredential.user.uid === adminUID) {
-      loginStatusSpan.textContent = "Logged in!";
-      loginFormDiv.style.display = "none";
-      clearVotesBtn.style.display = "inline";
-      adminLogoutBtn.style.display = "inline";
-      clearVotesBtn.disabled = false;
-    } else {
-      loginStatusSpan.textContent = "Access denied: Not an admin.";
-      auth.signOut();
-    }
-  })
-
 // Clear all votes (admin)
 clearVotesBtn.onclick = () => {
   if (confirm("Are you sure you want to clear all votes?")) {
