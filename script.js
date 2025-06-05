@@ -67,9 +67,9 @@ function isValidVotes() {
 
 // Display results
 function showResults(scoreMap) {
-  resultsDiv.innerHTML = "<h3>Vote Totals:</h3><ul>" +
-    OPTIONS.map((opt, i) => `<li>${opt}: ${scoreMap[i] || 0} points</li>`).join('') +
-    "</ul>";
+resultsDiv.innerHTML = "<h3>Vote Totals:</h3><ul class='vote-results'>" +
+  OPTIONS.map((opt, i) => `<li>${opt}: ${scoreMap[i] || 0} points</li>`).join('') +
+  "</ul>";
 }
 
 // Pick weighted random choice

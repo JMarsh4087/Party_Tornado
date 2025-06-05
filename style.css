@@ -25,3 +25,24 @@ button {
   font-weight: bold;
   font-size: 1.2em;
 }
+
+.vote-results {
+  list-style-type: none;
+  padding-left: 0;
+  text-align: left;
+}
+
+.vote-results li.first {
+  color: #006400; /* dark green */
+  font-weight: bold;
+}
+
+.vote-results li.second {
+  color: #228B22; /* medium green */
+  font-weight: normal;
+}
+
+.vote-results li.third {
+  color: #90EE90; /* light green */
+  font-weight: normal;
+}
