@@ -156,6 +156,9 @@ clearVotesBtn.onclick = () => {
       .then(() => {
         alert("All votes cleared.");
         finalChoiceDiv.innerHTML = "";
+        submitBtn.disabled = false; // Allow voting again
+        renderOptions(); // Re-render options for voting
+        localStorage.removeItem("userId"); // Optional: reset user
       })
       .catch((error) => {
         alert("Error clearing votes: " + error.message);
