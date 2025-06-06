@@ -1,3 +1,5 @@
+console.log("Loading options.js...");
+
 const OPTIONS = [
   "Timeguessr",
   "Quiplash",
@@ -9,3 +11,5 @@ const OPTIONS = [
   "Blather Round",
   "Turbo Golf Racing"
 ];
+
+console.log("OPTIONS initialized:", OPTIONS);

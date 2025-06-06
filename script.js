@@ -1,3 +1,6 @@
+console.log("Loading script.js...");
+console.log("OPTIONS inside script.js:", typeof OPTIONS !== "undefined" ? OPTIONS : "NOT DEFINED");
+
 // Firebase references
 const auth = firebase.auth();
 const database = firebase.database();
@@ -44,6 +47,10 @@ function renderOptions() {
       </select>
     `;
     container.appendChild(div);
+    if (!Array.isArray(OPTIONS)) {
+    container.innerHTML = "<p style='color:red;'>OPTIONS not defined.</p>";
+    return;
+    }
   });
 }
 
