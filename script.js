@@ -68,11 +68,6 @@ function renderRandomGif() {
   container.innerHTML = `<img src="${gif}" alt="Tornado" style="width: 200px; display: block; margin: 10px auto;">`;
 }
 
-window.onload = () => {
-  renderRandomGif();
-  renderOptions();
-};
-
 // Get user votes
 function getVotes() {
   Object.keys(votes).forEach(key => delete votes[key]);
@@ -217,5 +212,6 @@ adminLogoutBtn.onclick = () => {
 
 // On load
 window.onload = () => {
+  renderRandomGif();
   renderOptions();
 };
