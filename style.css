@@ -1,48 +1,50 @@
 body {
-  font-family: Arial, sans-serif;
-  max-width: 600px;
-  margin: 20px auto;
+  background-color: #121212;
+  color: #e0e0e0;
+  font-family: sans-serif;
+  margin: 20px;
   text-align: center;
 }
 
+h1, h3 {
+  color: #ffffff;
+}
+
+select, input, button {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border: 1px solid #444;
+  padding: 6px;
+  margin: 4px;
+  border-radius: 4px;
+}
+
 .option {
-  margin: 10px 0;
-}
-
-select {
-  margin-left: 10px;
-}
-
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-#results, #final-choice {
-  margin-top: 20px;
-  font-weight: bold;
-  font-size: 1.2em;
+  margin-bottom: 10px;
 }
 
 .vote-results {
-  list-style-type: none;
+  list-style: none;
   padding-left: 0;
-  text-align: left;
 }
 
-.vote-results li.first {
-  color: #006400; /* dark green */
+.vote-results li {
+  margin: 5px 0;
+}
+
+.first {
   font-weight: bold;
+  color: #e0c111; /* gold */
 }
 
-.vote-results li.second {
-  color: #228B22; /* medium green */
-  font-weight: normal;
+.second {
+  color: #aaa8a8; /* silver */
 }
 
-.vote-results li.third {
-  color: #90EE90; /* light green */
-  font-weight: normal;
+.third {
+  color: #814f1c; /* bronze */
+}
+
+.veto {
+  color: red;
 }

@@ -85,7 +85,8 @@ function showResults(scoreMap) {
     if (i === 0) cls = 'first';
     else if (i === 1) cls = 'second';
     else if (i === 2) cls = 'third';
-    return `<li class="${cls}">${OPTIONS[index]}: ${score} points</li>`;
+    const extraClass = score < 0 ? 'veto' : '';
+    return `<li class="${cls} ${extraClass}">${OPTIONS[index]}: ${score} points</li>`;
   });
 
   resultsDiv.innerHTML = `<h3>Vote Totals:</h3><ul class="vote-results">${listItems.join('')}</ul>`;
