@@ -15,10 +15,11 @@ const loginStatusSpan = document.getElementById('login-status');
 const clearVotesBtn = document.getElementById('clear-votes-btn');
 const adminLogoutBtn = document.getElementById('admin-logout-btn');
 const loginFormDiv = document.getElementById('login-form');
-const adminUID = 'J8RixVVu3pQcmqwnq94AeoHm5WM2'; 
+
+const adminUID = 'J8RixVVu3pQcmqwnq94AeoHm5WM2';
 
 // Constants
-const POINTS = { 1: 5, 2: 3, 3: 1, Veto: -10};
+const POINTS = { 1: 5, 2: 3, 3: 1, Veto: -10 };
 const votes = {};
 let userId = localStorage.getItem("userId");
 if (!userId) {
@@ -52,10 +53,10 @@ function getVotes() {
 
   const selects = document.querySelectorAll('select');
   selects.forEach(select => {
-    const value = parseInt(select.value);
+    const value = select.value;
     const index = parseInt(select.dataset.index);
-    if ([1, 2, 3, Veto].includes(value)) {
-      votes[index] = value;
+    if (["1", "2", "3", "Veto"].includes(value)) {
+      votes[index] = value === "Veto" ? "Veto" : parseInt(value);
     }
   });
 }
@@ -70,7 +71,7 @@ function isValidVotes() {
 function showResults(scoreMap) {
   const fullScores = OPTIONS.map((_, i) => [i, scoreMap[i] || 0]);
 
-  const ranked = fullScores.sort((a, b) => b[1] - a[1]); // sort descending
+  const ranked = fullScores.sort((a, b) => b[1] - a[1]);
 
   const listItems = ranked.map(([index, score], i) => {
     let cls = '';
@@ -101,10 +102,16 @@ function pickWeightedRandom(scoreMap) {
 submitBtn.onclick = () => {
   getVotes();
   if (!isValidVotes()) {
-    alert("Please rank exactly 3 unique options.");
+    alert("Please rank at least 3 options.");
     return;
   }
 
+  database.ref("votes/" + userId).set(votes);
+  alert("Thanks for voting!");
+  submitBtn.disabled = true;
+};
+
+// Firebase Vote Listener (Live Updates)
 database.ref("votes").on("value", (snapshot) => {
   const data = snapshot.val();
   const scores = {};
@@ -161,9 +168,9 @@ clearVotesBtn.onclick = () => {
       .then(() => {
         alert("All votes cleared.");
         finalChoiceDiv.innerHTML = "";
-        submitBtn.disabled = false; // Allow voting again
-        renderOptions(); // Re-render options for voting
-        localStorage.removeItem("userId"); // Optional: reset user
+        submitBtn.disabled = false;
+        renderOptions();
+        localStorage.removeItem("userId");
       })
       .catch((error) => {
         alert("Error clearing votes: " + error.message);
@@ -181,7 +188,7 @@ adminLogoutBtn.onclick = () => {
   });
 };
 
-// Initialize on load
+// On load
 window.onload = () => {
   renderOptions();
 };
