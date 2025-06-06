@@ -34,15 +34,15 @@ select, input, button {
 
 .first {
   font-weight: bold;
-  color: #e0c111; /* gold */
+  color: #006400; /* dark green */
 }
 
 .second {
-  color: #aaa8a8; /* silver */
+  color: #228B22; /* medium green */
 }
 
 .third {
-  color: #814f1c; /* bronze */
+  color: #90EE90; /* light green */
 }
 
 .veto {

@@ -54,6 +54,25 @@ function renderOptions() {
   });
 }
 
+const gifLinks = [
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjV2eXFua3J4OW14ZHlubnA2ejlpMmhuaXJhdzgyM2JtMTMycHFtaCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/d3mlXPjoK1ROfr9u/giphy.webp",
+  "https://media2.giphy.com/media/l3q2K5jinAlChoCLS/giphy.gif",
+  "https://media1.giphy.com/media/SKGo6OYe24EBG/giphy.gif",
+  "https://media3.giphy.com/media/RrVzUOXldFe8M/giphy.gif"
+];
+
+function renderRandomGif() {
+  const randomIndex = Math.floor(Math.random() * gifLinks.length);
+  const gif = gifLinks[randomIndex];
+  const container = document.getElementById('tornado-gif-container');
+  container.innerHTML = `<img src="${gif}" alt="Tornado" style="width: 200px; display: block; margin: 10px auto;">`;
+}
+
+window.onload = () => {
+  renderRandomGif();
+  renderOptions();
+};
+
 // Get user votes
 function getVotes() {
   Object.keys(votes).forEach(key => delete votes[key]);
