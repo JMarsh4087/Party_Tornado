@@ -36,9 +36,10 @@ function renderOptions() {
       <label>${option}</label>
       <select data-index="${i}">
         <option value="">Rank</option>
-        <option value="1">1 (Most preferred)</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
+        <option value="1">1 (Yaaaas!)</option>
+        <option value="2">2 (Like it.)</option>
+        <option value="3">3 (I guess so.)</option>
+        <option value="Veto">4 (NOPE.)</option>
       </select>
     `;
     container.appendChild(div);
@@ -53,7 +54,7 @@ function getVotes() {
   selects.forEach(select => {
     const value = parseInt(select.value);
     const index = parseInt(select.dataset.index);
-    if ([1, 2, 3].includes(value)) {
+    if ([1, 2, 3, 4].includes(value)) {
       votes[index] = value;
     }
   });
@@ -67,8 +68,9 @@ function isValidVotes() {
 
 // Display results
 function showResults(scoreMap) {
-  const ranked = Object.entries(scoreMap)
-    .sort((a, b) => b[1] - a[1]); // sort descending by score
+  const fullScores = OPTIONS.map((_, i) => [i, scoreMap[i] || 0]);
+
+  const ranked = fullScores.sort((a, b) => b[1] - a[1]); // sort descending
 
   const listItems = ranked.map(([index, score], i) => {
     let cls = '';
