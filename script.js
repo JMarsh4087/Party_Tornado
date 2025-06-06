@@ -18,7 +18,7 @@ const loginFormDiv = document.getElementById('login-form');
 const adminUID = 'J8RixVVu3pQcmqwnq94AeoHm5WM2'; 
 
 // Constants
-const POINTS = { 1: 10, 2: 7, 3: 4 };
+const POINTS = { 1: 5, 2: 3, 3: 1, Veto: -10};
 const votes = {};
 let userId = localStorage.getItem("userId");
 if (!userId) {
@@ -39,7 +39,7 @@ function renderOptions() {
         <option value="1">1 (Yaaaas!)</option>
         <option value="2">2 (Like it.)</option>
         <option value="3">3 (I guess so.)</option>
-        <option value="Veto">4 (NOPE.)</option>
+        <option value="Veto">Veto (NOPE.)</option>
       </select>
     `;
     container.appendChild(div);
@@ -54,7 +54,7 @@ function getVotes() {
   selects.forEach(select => {
     const value = parseInt(select.value);
     const index = parseInt(select.dataset.index);
-    if ([1, 2, 3, 4].includes(value)) {
+    if ([1, 2, 3, Veto].includes(value)) {
       votes[index] = value;
     }
   });
@@ -63,7 +63,7 @@ function getVotes() {
 // Validate votes
 function isValidVotes() {
   const ranks = Object.values(votes);
-  return ranks.length === 3 && new Set(ranks).size === 3;
+  return ranks.length >= 3;
 }
 
 // Display results
@@ -105,12 +105,6 @@ submitBtn.onclick = () => {
     return;
   }
 
-  database.ref("votes/" + userId).set(votes);
-  alert("Thanks for voting!");
-  submitBtn.disabled = true;
-};
-
-// Load and tally votes
 database.ref("votes").on("value", (snapshot) => {
   const data = snapshot.val();
   const scores = {};
