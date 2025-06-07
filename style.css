@@ -36,7 +36,7 @@ select, input, button {
   font-weight: bold;
   font-size: xx-large;
   color: #006400; /* dark green */
-  text-shadow: #d8ffd8 0px 0px 5px;
+  text-shadow: #d8ffd8 0px 0px 3px;
 }
 
 .second {

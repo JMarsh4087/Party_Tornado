@@ -7,6 +7,8 @@
 </head>
 <body>
   <h1>Party Tornado</h1>
+  <div class="container"></div> <!-- ✅ tornado.js expects this class -->
+
   <div id="tornado-gif-container"></div>
   <div id="options-container"></div>
 
@@ -29,9 +31,9 @@
   </div>
 
   <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <!-- Firebase Configuration -->
   <script>
@@ -52,5 +54,17 @@
   <!-- Application Scripts -->
   <script src="options.js"></script>
   <script src="script.js"></script>
+
+  <!-- Shaders -->
+  <script type="x-shader/x-vertex" id="vertexShader">
+    // your vertex shader code here
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentShader">
+    // your fragment shader code here
+  </script>
+
+  <!-- Tornado Visualization -->
+  <script type="module" src="tornado.js"></script>
 </body>
 </html>
