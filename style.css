@@ -36,15 +36,17 @@ select, input, button {
   font-weight: bold;
   font-size: xx-large;
   color: #006400; /* dark green */
-  text-shadow: #d8ffd8 0px 0px 15px;
+  text-shadow: #d8ffd8 0px 0px 5px;
 }
 
 .second {
+  font-weight: bold;
   color: #228B22; /* medium green */
   font-size: x-large;
 }
 
 .third {
+  font-weight: bold;
   color: #90EE90; /* light green */
   font-size: large;
 }
