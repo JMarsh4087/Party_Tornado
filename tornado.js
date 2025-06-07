@@ -109,31 +109,32 @@ class Viz {
     };
   }
 
-  render() {
-    const elapsed = this.clock.getElapsedTime();
-    this.material.uniforms.u_time.value = 1.3 * elapsed;
+render() {
+  const elapsed = this.clock.getElapsedTime();
+  this.material.uniforms.u_time.value = 1.3 * elapsed;
 
-    const dx = this.mouseTarget.x - this.mouse.x;
-    const dy = this.mouseTarget.y - this.mouse.y;
-    const delta = Math.sqrt(dx * dx + dy * dy);
-    this.material.uniforms.u_mouse_delta.value = delta;
+  const dx = this.mouseTarget.x - this.mouse.x;
+  const dy = this.mouseTarget.y - this.mouse.y;
+  const delta = Math.sqrt(dx * dx + dy * dy);
+  this.material.uniforms.u_mouse_delta.value = delta;
 
-    this.mouse.x += dx * 0.1;
-    this.mouse.y += dy * 0.1;
+  this.mouse.x += dx * 0.1;
+  this.mouse.y += dy * 0.1;
 
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObject(this.floor);
-    if (intersects.length > 0) {
-      const uv = intersects[0].uv;
-      if (uv) {
-        this.material.uniforms.u_wind.value = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
-          .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-          .multiplyScalar(200);
-      }
-    }
+  this.raycaster.setFromCamera(this.mouse, this.camera);
+  const intersects = this.raycaster.intersectObject(this.floor);
+  if (intersects.length > 0) {
+    const point = intersects[0].point;
 
-    this.renderer.render(this.scene, this.camera);
+    // Convert world point to local space relative to the tornado
+    const localPoint = this.mesh.worldToLocal(point.clone());
+    const wind = new THREE.Vector2(localPoint.x, -localPoint.z).multiplyScalar(100);
+
+    this.material.uniforms.u_wind.value.copy(wind);
   }
+
+  this.renderer.render(this.scene, this.camera);
+}
 
   loop() {
     this.render();
