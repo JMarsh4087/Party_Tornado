@@ -72,12 +72,12 @@ const gifLinks = [
   "https://media3.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bXpkYXdva2FrZDZkandmMGYybWg4MDUxdGEwN3F4dWY3Z3dza3J1NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/nM6a5kDV8JhTccIx0g/200.webp"
 ];
 
-function renderRandomGif() {
+/*function renderRandomGif() {
   const randomIndex = Math.floor(Math.random() * gifLinks.length);
   const gif = gifLinks[randomIndex];
   const container = document.getElementById('tornado-gif-container');
   container.innerHTML = `<img src="${gif}" alt="Tornado" style="width: 200px; display: block; margin: 10px auto;">`;
-}
+}*/
 
 // Get user votes
 function getVotes() {
@@ -223,6 +223,6 @@ adminLogoutBtn.onclick = () => {
 
 // On load
 window.onload = () => {
-  renderRandomGif();
+  // renderRandomGif();
   renderOptions();
 };
