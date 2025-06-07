@@ -44,13 +44,12 @@ class Viz {
     this.clock = new THREE.Clock();
 
     this.setupScene();
-    this.addCanvasEvents();
     this.render();
   }
 
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
@@ -71,7 +70,6 @@ class Viz {
         u_density: { value: config.density },
         u_curl: { value: config.curl },
         u_wind: { value: new THREE.Vector2(0, 0) },
-        u_mouse_delta: { value: 0 },
       },
       vertexShader,
       fragmentShader,
@@ -109,32 +107,25 @@ class Viz {
     };
   }
 
-render() {
-  const elapsed = this.clock.getElapsedTime();
-  this.material.uniforms.u_time.value = 1.3 * elapsed;
+  render() {
+    this.material.uniforms.u_time.value = 1.3 * this.clock.getElapsedTime();
 
-  const dx = this.mouseTarget.x - this.mouse.x;
-  const dy = this.mouseTarget.y - this.mouse.y;
-  const delta = Math.sqrt(dx * dx + dy * dy);
-  this.material.uniforms.u_mouse_delta.value = delta;
+    this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.1;
+    this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.1;
 
-  this.mouse.x += dx * 0.1;
-  this.mouse.y += dy * 0.1;
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const intersects = this.raycaster.intersectObject(this.floor);
+    if (intersects.length > 0) {
+      const uv = intersects[0].uv;
+      if (uv) {
+        this.material.uniforms.u_wind.value = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
+          .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+          .multiplyScalar(200);
+      }
+    }
 
-  this.raycaster.setFromCamera(this.mouse, this.camera);
-  const intersects = this.raycaster.intersectObject(this.floor);
-  if (intersects.length > 0) {
-    const point = intersects[0].point;
-
-    // Convert world point to local space relative to the tornado
-    const localPoint = this.mesh.worldToLocal(point.clone());
-    const wind = new THREE.Vector2(localPoint.x, -localPoint.z).multiplyScalar(100);
-
-    this.material.uniforms.u_wind.value.copy(wind);
+    this.renderer.render(this.scene, this.camera);
   }
-
-  this.renderer.render(this.scene, this.camera);
-}
 
   loop() {
     this.render();
@@ -149,9 +140,12 @@ render() {
   }
 }
 
+// ✅ Initialize everything
 const controls = new Controls();
 const viz = new Viz();
+viz.addCanvasEvents();
 viz.updateSize();
 viz.loop();
 
+// ✅ Keep responsive
 window.addEventListener('resize', () => viz.updateSize());
