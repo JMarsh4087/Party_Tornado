@@ -39,11 +39,11 @@ function renderOptions() {
     div.innerHTML = `
       <label>${option}</label>
       <select data-index="${i}">
-        <option value="">Rank</option>
-        <option value="1️⃣">1 (Yaaaas!)</option>
-        <option value="2️⃣">2 (Like it.)</option>
-        <option value="3️⃣">3 (I guess so.)</option>
-        <option value="🚫Veto🚫">Veto (NOPE.)</option>
+        <option value="">Choose Rank</option>
+        <option value="1">1️⃣ (Yaaaas!)</option>
+        <option value="2">2️⃣ (Like it.)</option>
+        <option value="3">3️⃣ (I guess so.)</option>
+        <option value="Veto">🚫Veto🚫 (NOPE.)</option>
       </select>
     `;
     container.appendChild(div);
@@ -87,8 +87,8 @@ function getVotes() {
   selects.forEach(select => {
     const value = select.value;
     const index = parseInt(select.dataset.index);
-    if (["1️⃣", "2️⃣", "3️⃣", "🚫Veto🚫"].includes(value)) {
-      votes[index] = value === "🚫Veto🚫" ? "🚫Veto🚫" : parseInt(value);
+    if (["1", "2", "3", "Veto"].includes(value)) {
+      votes[index] = value === "Veto" ? "Veto" : parseInt(value);
     }
   });
 }
