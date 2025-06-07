@@ -4,9 +4,9 @@ import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 const container = document.querySelector('.container');
 
 const config = {
-  height: 1.1,
-  density: 2.5,
-  curl: 12,
+  height: 1.7,
+  density: 4,
+  curl: 15,
 };
 
 class Controls {
@@ -14,13 +14,13 @@ class Controls {
     const gui = new GUI();
     if (window.innerWidth < 600) gui.close();
 
-    gui.add(config, 'height', 1, 1.8).step(0.01).onChange(v => {
+    gui.add(config, 'height', 1, 2).step(0.01).onChange(v => {
       viz.material.uniforms.u_height.value = v;
     });
-    gui.add(config, 'density', 1, 4).step(0.1).onChange(v => {
+    gui.add(config, 'density', 1, 8).step(0.1).onChange(v => {
       viz.material.uniforms.u_density.value = v;
     });
-    gui.add(config, 'curl', 4, 20).step(0.1).onChange(v => {
+    gui.add(config, 'curl', 5, 25).step(0.1).onChange(v => {
       viz.material.uniforms.u_curl.value = v;
     });
   }
@@ -81,7 +81,7 @@ class Viz {
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 1, 0)
     );
-    const geometry = new THREE.TubeGeometry(curve, 512, 0.55, 512, false);
+    const geometry = new THREE.TubeGeometry(curve, 640, 0.55, 640, false);
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.position.set(0, -0.65, 0);
     this.mesh.rotation.set(0, this.rotationY, 0);
