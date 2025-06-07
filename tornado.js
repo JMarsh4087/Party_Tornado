@@ -53,7 +53,7 @@ class Viz {
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x777777 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, 0, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
@@ -125,6 +125,7 @@ class Viz {
     // Raycast to get mouse position on floor
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObject(this.floor);
+    console.log(intersects); //check floor intersection is updating
 
     if (intersects.length > 0) {
       const uv = intersects[0].uv;
@@ -138,7 +139,7 @@ class Viz {
         const windFromMovement = this.mouseDelta
           .clone()
           .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-          .multiplyScalar(200);
+          .multiplyScalar(600);
 
         // Combined wind
         const combinedWind = windFromPosition.add(windFromMovement);
