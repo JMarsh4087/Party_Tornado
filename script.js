@@ -229,7 +229,7 @@ window.onload = () => {
   renderOptions();
 };
 
-const tornadoContainer = document.querySelector('.container');
+//const tornadoContainer = document.querySelector('.container');
 
 const config = {
     height: 1.1,
