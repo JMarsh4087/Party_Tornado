@@ -144,13 +144,13 @@ this.hitMarker.visible = false;
     // Wind based on pointer position (centered)
     const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
       .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-      .multiplyScalar(600);
+      .multiplyScalar(10);
 
     // Wind based on movement
     const windFromMovement = this.mouseDelta
       .clone()
       .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-      .multiplyScalar(600);
+      .multiplyScalar(10);
 
     // Combine and smooth
     const combinedWind = windFromPosition.add(windFromMovement);
