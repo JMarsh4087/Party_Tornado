@@ -1,3 +1,5 @@
+import * as THREE from "https://cdn.skypack.dev/three@0.133.1/build/three.module";
+import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 console.log("Loading script.js...");
 console.log("OPTIONS inside script.js:", typeof OPTIONS !== "undefined" ? OPTIONS : "NOT DEFINED");
 
@@ -227,10 +229,7 @@ window.onload = () => {
   renderOptions();
 };
 
-import * as THREE from "https://cdn.skypack.dev/three@0.133.1/build/three.module";
-import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
-
-const container = document.querySelector('.container');
+const tornadoContainer = document.querySelector('.container');
 
 const config = {
     height: 1.1,
@@ -363,7 +362,6 @@ class Viz {
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     }
 }
-
 
 const controls = new Controls();
 const viz = new Viz();
