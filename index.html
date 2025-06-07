@@ -140,8 +140,7 @@
       vec2 wind = vec2(.04, 0.);
       wind = rotate2d(u_time * 2.) * wind;
       pos += (vec3(wind.x, 0., wind.y) * (1. - cone));
-
-      wind += u_wind;
+      wind += u_wind * u_mouse_delta;
       pos += vec3(wind.x, 0., wind.y) * cubic_pulse_shape(.35, .8, y_factor);
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
