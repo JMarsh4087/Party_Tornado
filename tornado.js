@@ -1,7 +1,7 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.133.1/build/three.module";
 import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 
-const container = document.querySelector('.container');
+const container = document.getElementById('webgl-tornado-container');
 
 const config = {
     height: 1.1,

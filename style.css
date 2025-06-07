@@ -1,9 +1,28 @@
 body {
+  /* no pointer-events here */
   background-color: #121212;
   color: #e0e0e0;
   font-family: sans-serif;
   margin: 20px;
   text-align: center;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: fixed; /* covers entire screen */
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none; /* allow clicks to pass through */
+}
+
+canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 h1, h3 {
