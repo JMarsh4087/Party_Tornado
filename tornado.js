@@ -152,6 +152,15 @@ class Viz {
     console.warn("❌ No floor hit");
   }
 
+  const hitMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(10, 8, 8),
+  new THREE.MeshBasicMaterial({ color: 0xff00ff })
+);
+hitMarker.position.copy(intersects[0].point);
+
+this.scene.add(hitMarker);
+
+
   this.renderer.render(this.scene, this.camera);
 }
 
