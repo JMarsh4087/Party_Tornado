@@ -128,6 +128,19 @@ class Viz {
     console.log(intersects); //check floor intersection is updating
 
     if (intersects.length > 0) {
+    const uv = intersects[0].uv;
+    console.log("✅ Floor hit at UV:", uv);
+    if (uv) {
+        this.material.uniforms.u_wind.value = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
+        .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+        .multiplyScalar(600);
+  }
+} else {
+  console.warn("❌ No floor hit");
+}
+
+    
+    if (intersects.length > 0) {
       const uv = intersects[0].uv;
       if (uv) {
         // Wind from mouse position (centered around 0,0)
