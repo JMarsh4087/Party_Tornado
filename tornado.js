@@ -41,6 +41,10 @@ class Viz {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
     this.mouseTarget = new THREE.Vector2();
+    this.prevMouse = new THREE.Vector2();
+    this.mouseDelta = new THREE.Vector2();
+    this.wind = new THREE.Vector2();
+
     this.clock = new THREE.Clock();
 
     this.setupScene();
@@ -88,39 +92,58 @@ class Viz {
     this.scene.add(this.mesh);
   }
 
-addCanvasEvents() {
-  container.addEventListener('mousemove', (e) => {
-    updateMousePosition(e.clientX, e.clientY, this);
-  });
+  addCanvasEvents() {
+    container.addEventListener('mousemove', (e) => {
+      this.updateMousePosition(e.clientX, e.clientY);
+    });
 
-  container.addEventListener('touchmove', (e) => {
-    if (e.touches.length > 0) {
-      updateMousePosition(e.touches[0].pageX, e.touches[0].pageY, this);
-    }
-  }, { passive: true }); // ✅ This allows page scrolling
+    container.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        this.updateMousePosition(e.touches[0].pageX, e.touches[0].pageY);
+      }
+    }, { passive: true });
+  }
 
-  const updateMousePosition = (eX, eY, viz) => {
-    const x = eX - container.offsetLeft;
-    const y = eY - container.offsetTop;
-    viz.mouseTarget.x = (x / container.offsetWidth) * 2 - 1;
-    viz.mouseTarget.y = -(y / container.offsetHeight) * 2 + 1;
-  };
-}
+  updateMousePosition(x, y) {
+    const normX = (x - container.offsetLeft) / container.offsetWidth;
+    const normY = (y - container.offsetTop) / container.offsetHeight;
+    this.mouseTarget.x = normX * 2 - 1;
+    this.mouseTarget.y = -(normY * 2 - 1);
+  }
 
   render() {
     this.material.uniforms.u_time.value = 1.3 * this.clock.getElapsedTime();
 
+    // Smooth lerp toward target
     this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.1;
     this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.1;
 
+    // Compute mouse movement delta
+    this.mouseDelta
+      .copy(this.mouseTarget)
+      .sub(this.prevMouse)
+      .multiplyScalar(0.5); // scale movement effect
+    this.prevMouse.copy(this.mouseTarget);
+
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObject(this.floor);
+
     if (intersects.length > 0) {
       const uv = intersects[0].uv;
       if (uv) {
-        this.material.uniforms.u_wind.value = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
+        const windFromPos = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
           .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
           .multiplyScalar(600);
+
+        const windFromMove = this.mouseDelta
+          .clone()
+          .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+          .multiplyScalar(200);
+
+        const combinedWind = windFromPos.add(windFromMove);
+        this.wind.lerp(combinedWind, 0.1); // optional smoothing
+
+        this.material.uniforms.u_wind.value.copy(this.wind);
       }
     }
 
@@ -140,12 +163,12 @@ addCanvasEvents() {
   }
 }
 
-// ✅ Initialize everything
+// ✅ Initialize
 const controls = new Controls();
 const viz = new Viz();
 viz.addCanvasEvents();
 viz.updateSize();
 viz.loop();
 
-// ✅ Keep responsive
+// ✅ Resize support
 window.addEventListener('resize', () => viz.updateSize());
