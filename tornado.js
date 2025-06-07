@@ -94,10 +94,11 @@ class Viz {
     });
 
     container.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) {
+    if (e.touches.length > 0) {
         updateMousePosition(e.touches[0].pageX, e.touches[0].pageY, this);
-      }
-    });
+        }
+        }, { passive: true });
+
 
     const updateMousePosition = (eX, eY, viz) => {
       const x = eX - container.offsetLeft;
