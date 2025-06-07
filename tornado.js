@@ -53,7 +53,7 @@ class Viz {
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x667667 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(0.3 * Math.PI, 0, 0);
