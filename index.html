@@ -21,7 +21,7 @@
   <!-- ✅ Main container used by tornado.js -->
   <div class="container"></div>
 
-  <div id="tornado-gif-container"></div>
+  <!-- <div id="tornado-gif-container"></div> -->
   <div id="options-container"></div>
 
   <button id="submit-votes">Submit Votes</button>
@@ -67,7 +67,7 @@
     varying float vOpacity;
 
     void main() {
-        gl_FragColor = vec4(vec3(vStripes * 15.), vOpacity);
+        gl_FragColor = vec4(vec3(1.0 - vStripes * 15.), vOpacity);
     }
   </script>
 
