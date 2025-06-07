@@ -13,8 +13,7 @@ const guiContainer = document.querySelector('.gui-float');
 const gui = new GUI({ container: guiContainer });
 
 class Controls {
-  constructor() {
-    const gui = new GUI();
+  constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
     gui.add(config, 'height', 1, 2).step(0.01).onChange(v => {
@@ -208,8 +207,8 @@ if (intersects.length > 0) {
 }
 
 // ✅ Initialize everything
-const controls = new Controls();
 const viz = new Viz();
+const controls = new Controls(viz);
 viz.addCanvasEvents();
 viz.updateSize();
 viz.loop();
