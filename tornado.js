@@ -55,12 +55,19 @@ class Viz {
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
     const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    this.floor.position.set(0, 0, 0);
+    this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
     this.scene.add(this.floor);
 
     const vertexShader = document.getElementById("vertexShader")?.textContent;
     const fragmentShader = document.getElementById("fragmentShader")?.textContent;
+
+this.hitMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(10, 8, 8),
+  new THREE.MeshBasicMaterial({ color: 0xff00ff })
+);
+this.scene.add(this.hitMarker);
+this.hitMarker.visible = false;
 
     if (!vertexShader || !fragmentShader) {
       console.error("❌ Shader script tags not found in HTML");
@@ -152,14 +159,34 @@ class Viz {
     console.warn("❌ No floor hit");
   }
 
-  const hitMarker = new THREE.Mesh(
-  new THREE.SphereGeometry(10, 8, 8),
-  new THREE.MeshBasicMaterial({ color: 0xff00ff })
-);
-hitMarker.position.copy(intersects[0].point);
+if (intersects.length > 0) {
+  const point = intersects[0].point;
+  const local = this.floor.worldToLocal(point.clone());
 
-this.scene.add(hitMarker);
+  // Floor size is 2000 x 1000
+  const u = (local.x / 2000) + 0.5;
+  const v = (local.y / 1000) + 0.5;
 
+  const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
+    .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+    .multiplyScalar(600);
+
+  const windFromMovement = this.mouseDelta
+    .clone()
+    .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+    .multiplyScalar(600);
+
+  const combinedWind = windFromPosition.add(windFromMovement);
+  this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
+
+  // ✅ Move hit marker to intersection point
+  this.hitMarker.position.copy(point);
+  this.hitMarker.position.y += 5; // lift a little off the floor
+  this.hitMarker.visible = true;
+} else {
+  console.warn("❌ No floor hit");
+  this.hitMarker.visible = false;
+}
 
   this.renderer.render(this.scene, this.camera);
 }
