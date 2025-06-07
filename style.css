@@ -34,17 +34,30 @@ select, input, button {
 
 .first {
   font-weight: bold;
+  font-size: xx-large;
   color: #006400; /* dark green */
+  text-shadow: #90EE90 0px 0px 10px;
 }
 
 .second {
   color: #228B22; /* medium green */
+  font-size: larger;
 }
 
 .third {
   color: #90EE90; /* light green */
+  font-size: medium;
 }
 
 .veto {
   color: red;
+}
+
+body {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+canvas {
+    display: block;
 }
