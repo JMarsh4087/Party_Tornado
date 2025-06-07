@@ -7,19 +7,20 @@ body {
   text-align: center;
 }
 
-.container {
-  width: 100vw;
-  height: 100vh;
-  position: fixed; /* covers entire screen */
-  top: 0;
-  left: 0;
+#webgl-tornado-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background-color: #121212; /* match your dark mode */
   z-index: 0;
   overflow: hidden;
-  pointer-events: none; /* allow clicks to pass through */
 }
 
 canvas {
   display: block;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: -1;
   position: absolute;
   top: 0;
   left: 0;

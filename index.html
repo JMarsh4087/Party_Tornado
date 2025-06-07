@@ -57,17 +57,16 @@
 
   <!-- Shaders -->
   <script type="x-shader/x-vertex" id="vertexShader">
-    // Vertex Shader (basic)
   void main() {
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
-  </script>
+</script>
 
-  <script type="x-shader/x-fragment" id="fragmentShader">
-    // Fragment Shader (basic color)
+<script type="x-shader/x-fragment" id="fragmentShader">
   void main() {
-  gl_FragColor = vec4(1.0, 0.2, 0.8, 1.0); // pinkish tornado for testing
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); // black
   }
+</script>
 
   </script>
 
