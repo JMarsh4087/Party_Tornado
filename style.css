@@ -1,12 +1,20 @@
 html, body {
   height: auto;
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
+}
+
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
 }
 
 body {
   background-color: #121212;
   color: #e0e0e0;
-  font-family: sans-serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   margin: 20px;
   text-align: center;
 }
