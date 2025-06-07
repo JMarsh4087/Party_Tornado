@@ -211,5 +211,11 @@ viz.addCanvasEvents();
 viz.updateSize();
 viz.loop();
 
+window.addEventListener('mousemove', (event) => {
+  const x = (event.clientX / window.innerWidth) * 2 - 1;
+  const y = -(event.clientY / window.innerHeight) * 2 + 1;
+  viz.mouseTarget.set(x, y); // This drives raycasting + tornado wind
+});
+
 // ✅ Keep responsive
 window.addEventListener('resize', () => viz.updateSize());

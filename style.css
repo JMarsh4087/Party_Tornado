@@ -38,7 +38,7 @@ canvas {
   left: 0;
   width: 100vw !important;
   height: 100vh !important;
-  pointer-events: auto; /* Allow interactions for raycasting */
+  pointer-events: none; /* 🛑 Prevents blocking UI buttons */
   z-index: -1;
 }
 
