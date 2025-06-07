@@ -36,17 +36,17 @@ select, input, button {
   font-weight: bold;
   font-size: xx-large;
   color: #006400; /* dark green */
-  text-shadow: #90EE90 0px 0px 10px;
+  text-shadow: #d8ffd8 0px 0px 15px;
 }
 
 .second {
   color: #228B22; /* medium green */
-  font-size: larger;
+  font-size: x-large;
 }
 
 .third {
   color: #90EE90; /* light green */
-  font-size: medium;
+  font-size: large;
 }
 
 .veto {
