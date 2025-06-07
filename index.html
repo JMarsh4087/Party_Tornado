@@ -4,11 +4,23 @@
   <meta charset="UTF-8">
   <title>🎉Party Tornado🎉</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <h1>Party Tornado</h1>
-  <div class="container"></div> <!-- ✅ tornado.js expects this class -->
-  <div id="webgl-tornado-container" style="width: 100%; height: 400px;"></div>
+
+  <!-- ✅ Main container used by tornado.js -->
+  <div class="container"></div>
+
   <div id="tornado-gif-container"></div>
   <div id="options-container"></div>
 
@@ -46,30 +58,100 @@
       messagingSenderId: "294712968263",
       appId: "1:294712968263:web:0ad47c9333fc08d7031d62"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
   </script>
 
-  <!-- Shaders -->
-  <script type="x-shader/x-vertex" id="vertexShader">
-  void main() {
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-</script>
+  <!-- Tornado Shaders -->
+  <script type="x-shader/x-fragment" id="fragmentShader">
+    varying float vStripes;
+    varying float vOpacity;
 
-<script type="x-shader/x-fragment" id="fragmentShader">
-  void main() {
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); // black
-  }
-</script>
-
+    void main() {
+        gl_FragColor = vec4(vec3(vStripes * 15.), vOpacity);
+    }
   </script>
 
-  <!-- Tornado Visualization -->
+  <script type="x-shader/x-vertex" id="vertexShader">
+    #define PI 3.14159265359
+
+    uniform float u_time;
+    uniform float u_height;
+    uniform float u_density;
+    uniform float u_curl;
+    uniform vec2 u_wind;
+    uniform float u_mouse_delta;
+
+    varying float vStripes;
+    varying float vOpacity;
+
+    vec2 random2(vec2 p) {
+      return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+    }
+
+    float voronoi(vec2 _uv, float time){
+      vec2 i_uv = floor(_uv);
+      vec2 f_uv = fract(_uv);
+      float min_dist = 2.;
+      for (int j = -1; j <= 1; j++) {
+        for (int i = -1; i <= 1; i++) {
+          vec2 tile_offset = vec2(float(i), float(j));
+          vec2 cell_center = .5 + .5 * sin(time * .5 + PI * 2. * random2(i_uv + tile_offset));
+          float dist = length(tile_offset + cell_center - f_uv);
+          min_dist = min(min_dist, dist);
+        }
+      }
+      return pow(min_dist, 2.);
+    }
+
+    mat2 rotate2d(float angle) {
+      return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
+    }
+
+    float cubic_pulse_shape(float center, float width, float x) {
+      x = abs(x - center);
+      if (x > width) return 0.;
+      x /= width;
+      return 1. - x * x * (3. - 2. * x);
+    }
+
+    float cone_shape(float x) {
+      return .5 * cos(x * 3.1 + 2.6) + .5 + exp(-12. * x);
+    }
+
+    void main() {
+      vec3 pos = position;
+      float y_factor = uv.x;
+
+      float vertical_transparency = pow(3. * y_factor * (1. - y_factor), 2.5);
+      float back_transparency = pow(pos.x + 1., 2.) * pow(pos.z + 1., 2.);
+      vOpacity = vertical_transparency * back_transparency;
+
+      vec2 voronoi_point = vec2(atan(pos.x, pos.z) - pos.y * u_curl, pos.y - u_time);
+      float bumps = voronoi(u_density * voronoi_point, u_time);
+      vec3 pos_no_bump = pos;
+      pos -= (normal * .2 * bumps);
+      vStripes = length(pos_no_bump - pos);
+
+      float cone = cone_shape(y_factor);
+      pos.x *= cone;
+      pos.z *= cone;
+      pos.y *= u_height;
+
+      vec2 wind = vec2(.04, 0.);
+      wind = rotate2d(u_time * 2.) * wind;
+      pos += (vec3(wind.x, 0., wind.y) * (1. - cone));
+
+      wind += u_wind;
+      pos += vec3(wind.x, 0., wind.y) * cubic_pulse_shape(.35, .8, y_factor);
+
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
+    }
+  </script>
+
+  <!-- Tornado Visualization (3D Shader Scene) -->
   <script type="module" src="tornado.js"></script>
 
-  <!-- Application Scripts -->
+  <!-- Application Logic -->
   <script src="options.js"></script>
   <script src="script.js"></script>
 
