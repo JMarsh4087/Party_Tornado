@@ -6,9 +6,12 @@ html, body {
 }
 
 .container {
-  position: relative;
+  position: fixed; /* or absolute */
+  top: 0;
+  left: 0;
   width: 100vw;
-  height: 50vh;
+  height: 100vh;
+  z-index: -1; /* match canvas */
 }
 
 body {
@@ -39,15 +42,19 @@ canvas {
   z-index: -1;
 }
 
-/* UI overlay: allow visuals on top, but no blocking interaction */
 .ui-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  position: relative;
   z-index: 2;
-}
-
-.ui-overlay * {
-  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 40px;
 }
 
 h1, h3 {

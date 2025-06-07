@@ -4,7 +4,7 @@ import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 const container = document.querySelector('.container');
 
 const config = {
-  height: 1.7,
+  height: 2,
   density: 4,
   curl: 15,
 };
