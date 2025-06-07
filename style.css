@@ -37,8 +37,16 @@ canvas {
   left: 0;
   width: 100vw !important;
   height: 100vh !important;
-  pointer-events: none; /* 🛑 Prevents blocking UI buttons */
+  pointer-events: none; /* ✅ lets clicks go through */
   z-index: -1;
+}
+
+.gui-float {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  pointer-events: auto; /* ✅ allows GUI interaction */
 }
 
 .ui-overlay {
@@ -54,14 +62,6 @@ canvas {
   align-items: center;
   justify-content: flex-start;
   padding-top: 40px;
-}
-
-.gui-float {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  pointer-events: auto; /* 🧠 Make sure this can be clicked */
 }
 
 h1, h3 {

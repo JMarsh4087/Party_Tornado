@@ -103,11 +103,11 @@ this.hitMarker.visible = false;
   }
 
   addCanvasEvents() {
-    container.addEventListener('mousemove', (e) => {
+    window.addEventListener('mousemove', (e) => {
       updateMousePosition(e.clientX, e.clientY, this);
     });
 
-    container.addEventListener('touchmove', (e) => {
+    window.addEventListener('touchmove', (e) => {
       if (e.touches.length > 0) {
         updateMousePosition(e.touches[0].pageX, e.touches[0].pageY, this);
       }
