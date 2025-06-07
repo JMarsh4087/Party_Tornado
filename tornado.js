@@ -88,25 +88,24 @@ class Viz {
     this.scene.add(this.mesh);
   }
 
-  addCanvasEvents() {
-    container.addEventListener('mousemove', (e) => {
-      updateMousePosition(e.clientX, e.clientY, this);
-    });
+addCanvasEvents() {
+  container.addEventListener('mousemove', (e) => {
+    updateMousePosition(e.clientX, e.clientY, this);
+  });
 
-    container.addEventListener('touchmove', (e) => {
+  container.addEventListener('touchmove', (e) => {
     if (e.touches.length > 0) {
-        updateMousePosition(e.touches[0].pageX, e.touches[0].pageY, this);
-        }
-        }, { passive: true });
+      updateMousePosition(e.touches[0].pageX, e.touches[0].pageY, this);
+    }
+  }, { passive: true }); // ✅ This allows page scrolling
 
-
-    const updateMousePosition = (eX, eY, viz) => {
-      const x = eX - container.offsetLeft;
-      const y = eY - container.offsetTop;
-      viz.mouseTarget.x = (x / container.offsetWidth) * 2 - 1;
-      viz.mouseTarget.y = -(y / container.offsetHeight) * 2 + 1;
-    };
-  }
+  const updateMousePosition = (eX, eY, viz) => {
+    const x = eX - container.offsetLeft;
+    const y = eY - container.offsetTop;
+    viz.mouseTarget.x = (x / container.offsetWidth) * 2 - 1;
+    viz.mouseTarget.y = -(y / container.offsetHeight) * 2 + 1;
+  };
+}
 
   render() {
     this.material.uniforms.u_time.value = 1.3 * this.clock.getElapsedTime();
