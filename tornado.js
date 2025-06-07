@@ -112,58 +112,48 @@ class Viz {
   }
 
   render() {
-    this.material.uniforms.u_time.value = 1.3 * this.clock.getElapsedTime();
+  this.material.uniforms.u_time.value = 1.3 * this.clock.getElapsedTime();
 
-    // Smooth interpolate mouse
-    this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.1;
-    this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.1;
+  // Smooth interpolate mouse
+  this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.1;
+  this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.1;
 
-    // Calculate mouse delta (movement direction)
-    this.mouseDelta.copy(this.mouseTarget).sub(this.prevMouse).multiplyScalar(0.5);
-    this.prevMouse.copy(this.mouseTarget);
+  // Mouse movement delta
+  this.mouseDelta.copy(this.mouseTarget).sub(this.prevMouse).multiplyScalar(0.5);
+  this.prevMouse.copy(this.mouseTarget);
 
-    // Raycast to get mouse position on floor
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObject(this.floor);
-    console.log(intersects); //check floor intersection is updating
+  // Raycast to floor
+  this.raycaster.setFromCamera(this.mouse, this.camera);
+  const intersects = this.raycaster.intersectObject(this.floor);
 
-    if (intersects.length > 0) {
-    const uv = intersects[0].uv;
-    console.log("✅ Floor hit at UV:", uv);
-    if (uv) {
-        this.material.uniforms.u_wind.value = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
-        .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-        .multiplyScalar(600);
+  if (intersects.length > 0) {
+    const point = intersects[0].point;
+    const local = this.floor.worldToLocal(point.clone());
+
+    // Floor size is 2000 x 1000
+    const u = (local.x / 2000) + 0.5;
+    const v = (local.y / 1000) + 0.5;
+
+    // Wind based on pointer position (centered)
+    const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
+      .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+      .multiplyScalar(600);
+
+    // Wind based on movement
+    const windFromMovement = this.mouseDelta
+      .clone()
+      .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+      .multiplyScalar(600);
+
+    // Combine and smooth
+    const combinedWind = windFromPosition.add(windFromMovement);
+    this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
+  } else {
+    console.warn("❌ No floor hit");
   }
-} else {
-  console.warn("❌ No floor hit");
+
+  this.renderer.render(this.scene, this.camera);
 }
-
-    
-    if (intersects.length > 0) {
-      const uv = intersects[0].uv;
-      if (uv) {
-        // Wind from mouse position (centered around 0,0)
-        const windFromPosition = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
-          .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-          .multiplyScalar(600);
-
-        // Wind from mouse movement
-        const windFromMovement = this.mouseDelta
-          .clone()
-          .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-          .multiplyScalar(600);
-
-        // Combined wind
-        const combinedWind = windFromPosition.add(windFromMovement);
-
-        // Smooth wind (optional)
-        this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
-      }
-    }
-
-    this.renderer.render(this.scene, this.camera);
-  }
 
   loop() {
     this.render();
