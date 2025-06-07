@@ -9,6 +9,9 @@ const config = {
   curl: 15,
 };
 
+const guiContainer = document.querySelector('.gui-float');
+const gui = new GUI({ container: guiContainer });
+
 class Controls {
   constructor() {
     const gui = new GUI();

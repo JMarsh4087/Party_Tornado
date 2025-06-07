@@ -22,7 +22,6 @@ body {
   text-align: center;
 }
 
-/* Canvas configuration */
 #webgl-tornado-container canvas {
   position: absolute;
   top: 0;
@@ -55,6 +54,14 @@ canvas {
   align-items: center;
   justify-content: flex-start;
   padding-top: 40px;
+}
+
+.gui-float {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  pointer-events: auto; /* 🧠 Make sure this can be clicked */
 }
 
 h1, h3 {
