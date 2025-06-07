@@ -116,9 +116,12 @@ class Viz {
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects = this.raycaster.intersectObject(this.floor);
     if (intersects.length > 0) {
-    const point = intersects[0].point;
-    const localPoint = this.mesh.worldToLocal(point.clone());
-    this.material.uniforms.u_wind.value = new THREE.Vector2(localPoint.x, -localPoint.z).multiplyScalar(100);
+      const uv = intersects[0].uv;
+      if (uv) {
+        this.material.uniforms.u_wind.value = new THREE.Vector2(uv.x - 0.5, 0.5 - uv.y)
+          .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+          .multiplyScalar(600);
+      }
     }
 
     this.renderer.render(this.scene, this.camera);
