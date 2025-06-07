@@ -19,12 +19,14 @@ body {
   text-align: center;
 }
 
+/* Canvas configuration */
 #webgl-tornado-container canvas {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 0;
   background-color: #121212;
+  pointer-events: auto; /* Important! canvas must receive mouse events */
 }
 
 canvas {
@@ -33,8 +35,19 @@ canvas {
   left: 0;
   width: 100vw !important;
   height: 100vh !important;
-  pointer-events: none; /* Important! Allows scrolling/interactions through it */
+  pointer-events: auto; /* Allow interactions for raycasting */
   z-index: -1;
+}
+
+/* UI overlay: allow visuals on top, but no blocking interaction */
+.ui-overlay {
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+}
+
+.ui-overlay * {
+  pointer-events: auto;
 }
 
 h1, h3 {

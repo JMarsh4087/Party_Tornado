@@ -169,12 +169,12 @@ if (intersects.length > 0) {
 
   const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
     .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-    .multiplyScalar(200);
+    .multiplyScalar(20);
 
   const windFromMovement = this.mouseDelta
     .clone()
     .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-    .multiplyScalar(200);
+    .multiplyScalar(20);
 
   const combinedWind = windFromPosition.add(windFromMovement);
   this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
