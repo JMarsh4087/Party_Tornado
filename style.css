@@ -7,13 +7,12 @@ body {
   text-align: center;
 }
 
-#webgl-tornado-container {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  background-color: #121212; /* match your dark mode */
+#webgl-tornado-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 0;
-  overflow: hidden;
+  background-color: #121212;
 }
 
 canvas {
