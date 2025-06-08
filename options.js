@@ -15,6 +15,7 @@ const OPTIONS = [
   "⁉️🔪🩸🎉Trivia Murder Party⁉️🔪🩸🎉",
   "⚔️🛡️Valheim⚔️🛡️",
   "🕵️‍♂️Code Names🕵️‍♀️",
+  "🤿🌊Murky Divers🤿🌊",
   "✨✨✨Try The New Thing Someone Just Suggested!✨✨✨"
 ];
 
