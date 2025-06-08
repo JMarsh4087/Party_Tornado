@@ -16,14 +16,22 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
-    gui.add(config, 'Danger', 1, 3).step(0.01).onChange(v => {
-      viz.material.uniforms.u_height.value = v;
+    gui.add(config, 'Danger', 1, 100).step(1).onChange(v => {
+      // Remap 1–100 → 1–2.5
+      const scaled = 1 + (v - 1) * (2.5 - 1) / (100 - 1);
+      viz.material.uniforms.u_height.value = scaled;
     });
-    gui.add(config, 'Intensity', 1, 8).step(0.1).onChange(v => {
-      viz.material.uniforms.u_density.value = v;
+
+    gui.add(config, 'Intensity', 1, 100).step(1).onChange(v => {
+      // Remap 1–100 → 1–8
+      const scaled = 1 + (v - 1) * (8 - 1) / (100 - 1);
+      viz.material.uniforms.u_density.value = scaled;
     });
-    gui.add(config, 'Speed', 5, 25).step(0.1).onChange(v => {
-      viz.material.uniforms.u_curl.value = v;
+
+    gui.add(config, 'Speed', 1, 100).step(1).onChange(v => {
+      // Remap 1–100 → 5–25
+      const scaled = 5 + (v - 1) * (25 - 5) / (100 - 1);
+      viz.material.uniforms.u_curl.value = scaled;
     });
   }
 }
@@ -35,7 +43,7 @@ class Viz {
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-    this.camera.position.set(0, 1.1, 3.9);
+    this.camera.position.set(0, 1.1, 2.9);
     this.camera.lookAt(0, 0, 0);
 
     this.rotationY = -0.4 * Math.PI;
