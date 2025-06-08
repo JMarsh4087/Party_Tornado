@@ -16,20 +16,27 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
+    // Map and apply initial values
+    const dangerScaled   = 1 + (config.Danger - 1) * (2.5 - 1) / (100 - 1);
+    const intensityScaled = 1 + (config.Intensity - 1) * (8 - 1) / (100 - 1);
+    const speedScaled    = 5 + (config.Speed - 1) * (25 - 5) / (100 - 1);
+
+    viz.material.uniforms.u_height.value = dangerScaled;
+    viz.material.uniforms.u_density.value = intensityScaled;
+    viz.material.uniforms.u_curl.value = speedScaled;
+
+    // GUI controls
     gui.add(config, 'Danger', 1, 100).step(1).onChange(v => {
-      // Remap 1–100 → 1–2.5
       const scaled = 1 + (v - 1) * (2.5 - 1) / (100 - 1);
       viz.material.uniforms.u_height.value = scaled;
     });
 
     gui.add(config, 'Intensity', 1, 100).step(1).onChange(v => {
-      // Remap 1–100 → 1–8
       const scaled = 1 + (v - 1) * (8 - 1) / (100 - 1);
       viz.material.uniforms.u_density.value = scaled;
     });
 
     gui.add(config, 'Speed', 1, 100).step(1).onChange(v => {
-      // Remap 1–100 → 5–25
       const scaled = 5 + (v - 1) * (25 - 5) / (100 - 1);
       viz.material.uniforms.u_curl.value = scaled;
     });
@@ -63,7 +70,7 @@ class Viz {
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x222222 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
@@ -102,7 +109,7 @@ this.hitMarker.visible = false;
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 1, 0)
     );
-    const geometry = new THREE.TubeGeometry(curve, 640, 0.55, 640, false);
+    const geometry = new THREE.TubeGeometry(curve, 640, 0.85, 640, false);
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.position.set(0, -0.65, 0);
     this.mesh.rotation.set(0, this.rotationY, 0);
@@ -179,12 +186,12 @@ if (intersects.length > 0) {
 
   const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
     .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-    .multiplyScalar(20);
+    .multiplyScalar(5);
 
   const windFromMovement = this.mouseDelta
     .clone()
     .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-    .multiplyScalar(20);
+    .multiplyScalar(5);
 
   const combinedWind = windFromPosition.add(windFromMovement);
   this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
