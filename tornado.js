@@ -214,9 +214,13 @@ viz.updateSize();
 viz.loop();
 
 window.addEventListener('mousemove', (event) => {
+  // 👇 Skip tornado interaction if mouse is over GUI
+  const isOverGUI = event.target.closest('.gui-float');
+  if (isOverGUI) return;
+
   const x = (event.clientX / window.innerWidth) * 2 - 1;
   const y = -(event.clientY / window.innerHeight) * 2 + 1;
-  viz.mouseTarget.set(x, y); // This drives raycasting + tornado wind
+  viz.mouseTarget.set(x, y);
 });
 
 // ✅ Keep responsive
