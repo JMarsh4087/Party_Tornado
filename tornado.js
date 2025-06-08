@@ -4,9 +4,9 @@ import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 const container = document.querySelector('.container');
 
 const config = {
-  Danger: 2,
-  Intensity: 4,
-  Speed: 15,
+  Danger: 50,
+  Intensity: 50,
+  Speed: 50,
 };
 
 const guiContainer = document.querySelector('.gui-float');
@@ -65,7 +65,7 @@ class Viz {
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
     const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    this.floor.position.set(0, -2, 0);
+    this.floor.position.set(0, -3, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
     this.scene.add(this.floor);
 
