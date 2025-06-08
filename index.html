@@ -148,10 +148,6 @@
       wind += u_wind;
       pos += vec3(wind.x, 0., wind.y) * cubic_pulse_shape(.35, .8, y_factor);
 
-      vec3 newPosition = position;
-      newPosition.xy *= u_radius;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-
       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
     }
   </script>
