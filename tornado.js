@@ -63,7 +63,7 @@ class Viz {
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x111111 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
@@ -154,13 +154,13 @@ this.material = new THREE.ShaderMaterial({
     // Wind based on pointer position (centered)
     const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
       .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-      .multiplyScalar(10);
+      .multiplyScalar(15);
 
     // Wind based on movement
     const windFromMovement = this.mouseDelta
       .clone()
       .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-      .multiplyScalar(10);
+      .multiplyScalar(15);
 
     // Combine and smooth
     const combinedWind = windFromPosition.add(windFromMovement);
