@@ -102,7 +102,7 @@ select, input, button {
 
 .first {
   font-weight:bolder;
-  font-size: 3.5em;
+  font-size: 3em;
   color: #006400; /* dark green */
   text-shadow: #d8ffd8 0px 0px 3px;
 }
@@ -110,7 +110,7 @@ select, input, button {
 .second {
   font-weight: bolder;
   color: #228B22; /* medium green */
-  font-size: 2.5em;
+  font-size: 2em;
 }
 
 .third {
