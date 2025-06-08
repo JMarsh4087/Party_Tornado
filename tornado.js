@@ -102,7 +102,7 @@ this.hitMarker.visible = false;
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 1, 0)
     );
-    const geometry = new THREE.TubeGeometry(curve, 1000, 0.55, 640, false);
+    const geometry = new THREE.TubeGeometry(curve, 640, 0.55, 640, false);
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.position.set(0, -0.65, 0);
     this.mesh.rotation.set(0, this.rotationY, 0);
