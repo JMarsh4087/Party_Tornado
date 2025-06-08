@@ -10,7 +10,7 @@ const config = {
 };
 
 const guiContainer = document.querySelector('.gui-float');
-const gui = new GUI({ container: guiContainer });
+const gui = new GUI({ title: 'Tornado Mayhem', container: guiContainer });
 
 class Controls {
   constructor(viz) {
