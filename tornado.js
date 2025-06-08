@@ -4,9 +4,9 @@ import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 const container = document.querySelector('.container');
 
 const config = {
-  height: 2,
-  density: 4,
-  curl: 15,
+  Height: 2,
+  Density: 4,
+  Curl: 15,
 };
 
 const guiContainer = document.querySelector('.gui-float');
@@ -16,17 +16,24 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
-    gui.add(config, 'height', 1, 2).step(0.01).onChange(v => {
+    const folder = gui.addFolder('🌪️Tornado Mayhem🌪️');
+
+    folder.add(config, 'Height', 1, 2).step(0.01).name('Danger').onChange(v => {
       viz.material.uniforms.u_height.value = v;
     });
-    gui.add(config, 'density', 1, 8).step(0.1).onChange(v => {
+
+    folder.add(config, 'Density', 1, 8).step(0.1).name('Speed').onChange(v => {
       viz.material.uniforms.u_density.value = v;
     });
-    gui.add(config, 'curl', 5, 25).step(0.1).onChange(v => {
+
+    folder.add(config, 'Curl', 5, 25).step(0.1).name('Intensity').onChange(v => {
       viz.material.uniforms.u_curl.value = v;
     });
+
+    folder.open(); // optional: auto-expand
   }
 }
+
 
 class Viz {
   constructor() {
@@ -55,7 +62,7 @@ class Viz {
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x444444 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
@@ -79,9 +86,9 @@ this.hitMarker.visible = false;
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         u_time: { value: 0 },
-        u_height: { value: config.height },
-        u_density: { value: config.density },
-        u_curl: { value: config.curl },
+        u_height: { value: config.Height },
+        u_density: { value: config.Density },
+        u_curl: { value: config.Curl },
         u_wind: { value: new THREE.Vector2(0, 0) },
       },
       vertexShader,
