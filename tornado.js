@@ -84,25 +84,25 @@ this.hitMarker.visible = false;
       return;
     }
 
-    this.material = new THREE.ShaderMaterial({
-      uniforms: {
-        u_time: { value: 0 },
-        u_height: { value: config.Danger },
-        u_density: { value: config.Density },
-        u_curl: { value: config.Curl },
-        u_wind: { value: new THREE.Vector2(0, 0) },
-      },
-      vertexShader,
-      fragmentShader,
-      side: THREE.DoubleSide,
-      transparent: true,
-    });
+this.material = new THREE.ShaderMaterial({
+  uniforms: {
+    u_time: { value: 0 },
+    u_height: { value: 1 + (config.Danger - 1) * (2.5 - 1) / (100 - 1) },
+    u_density: { value: 1 + (config.Intensity - 1) * (8 - 1) / (100 - 1) },
+    u_curl: { value: 5 + (config.Speed - 1) * (25 - 5) / (100 - 1) },
+    u_wind: { value: new THREE.Vector2(0, 0) },
+  },
+  vertexShader,
+  fragmentShader,
+  side: THREE.DoubleSide,
+  transparent: true,
+});
 
     const curve = new THREE.LineCurve3(
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 1, 0)
     );
-    const geometry = new THREE.TubeGeometry(curve, 640, 1.00, 640, false);
+    const geometry = new THREE.TubeGeometry(curve, 640, 1.20, 640, false);
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.position.set(0, -0.65, 0);
     this.mesh.rotation.set(0, this.rotationY, 0);
