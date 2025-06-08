@@ -19,6 +19,7 @@ body {
   color: #e0e0e0;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   margin: 20px;
+  font-weight: bold;
   text-align: center;
 }
 
@@ -70,7 +71,6 @@ canvas {
 
 h1, h3 {
   color: #ffffff;
-  font-weight:bold;
 }
 
 h1{
@@ -101,22 +101,22 @@ select, input, button {
 }
 
 .first {
-  font-weight: bold;
-  font-size: xx-large;
+  font-weight:bolder;
+  font-size: 2em;
   color: #006400; /* dark green */
   text-shadow: #d8ffd8 0px 0px 3px;
 }
 
 .second {
-  font-weight: bold;
+  font-weight: bolder;
   color: #228B22; /* medium green */
-  font-size: x-large;
+  font-size: 1.2em;
 }
 
 .third {
-  font-weight: bold;
+  font-weight: bolder;
   color: #90EE90; /* light green */
-  font-size: large;
+  font-size: 0.8em;
 }
 
 .veto {
