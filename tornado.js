@@ -16,22 +16,12 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
-    // Map and apply initial values
-    const dangerScaled   = 1 + (config.Danger - 1) * (2.5 - 1) / (100 - 1);
-    const intensityScaled = 1 + (config.Intensity - 1) * (8 - 1) / (100 - 1);
-    const speedScaled    = 5 + (config.Speed - 1) * (25 - 5) / (100 - 1);
-
-    viz.material.uniforms.u_height.value = dangerScaled;
-    viz.material.uniforms.u_density.value = intensityScaled;
-    viz.material.uniforms.u_curl.value = speedScaled;
-
     // GUI controls
-gui.add(config, 'Danger', 1, 100).step(1).onChange(v => {
-  const height = 1 + (v - 1) * (2.5 - 1) / (100 - 1);
-  viz.material.uniforms.u_height.value = height;
-
-  viz.tubeRadiusTarget = 0.2 + (v / 100) * 1.2; // Set the target only
-});
+    gui.add(config, 'Danger', 1, 100).step(1).onChange(v => {
+      const height = 1 + (v - 1) * (2.5 - 1) / (100 - 1);
+      viz.material.uniforms.u_height.value = height;
+      viz.radiusTarget = 0.4 + (v / 100) * 0.8; // radius: 0.4 to 1.2
+    });
 
     gui.add(config, 'Intensity', 1, 100).step(1).onChange(v => {
       const scaled = 1 + (v - 1) * (8 - 1) / (100 - 1);
@@ -56,10 +46,9 @@ class Viz {
     this.camera.lookAt(0, 0, 0);
 
     this.rotationY = -0.4 * Math.PI;
-    this.tubeRadius = 0.85;
-    this.tubeRadius = 0.85;
-    this.tubeRadiusTarget = 0.85;
 
+    this.radiusTarget = 0.85;
+    this.radiusCurrent = 0.85;
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -72,23 +61,10 @@ class Viz {
     this.setupScene();
     this.render();
   }
-  
-updateTubeGeometry() {
-  const curve = new THREE.LineCurve3(
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0, 1, 0)
-  );
-
-  const newGeometry = new THREE.TubeGeometry(curve, 640, this.tubeRadius, 640, false);
-
-  this.mesh.geometry.dispose();
-  this.mesh.geometry = newGeometry;
-}
 
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
-    //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x222222 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x222222 });
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
@@ -96,13 +72,6 @@ updateTubeGeometry() {
 
     const vertexShader = document.getElementById("vertexShader")?.textContent;
     const fragmentShader = document.getElementById("fragmentShader")?.textContent;
-
-this.hitMarker = new THREE.Mesh(
-  new THREE.SphereGeometry(10, 8, 8),
-  new THREE.MeshBasicMaterial({ color: 0xff00ff })
-);
-this.scene.add(this.hitMarker);
-this.hitMarker.visible = false;
 
     if (!vertexShader || !fragmentShader) {
       console.error("❌ Shader script tags not found in HTML");
@@ -113,9 +82,10 @@ this.hitMarker.visible = false;
       uniforms: {
         u_time: { value: 0 },
         u_height: { value: config.Danger },
-        u_density: { value: config.Density },
-        u_curl: { value: config.Curl },
+        u_density: { value: config.Intensity },
+        u_curl: { value: config.Speed },
         u_wind: { value: new THREE.Vector2(0, 0) },
+        u_radius: { value: 0.85 },
       },
       vertexShader,
       fragmentShader,
@@ -132,6 +102,13 @@ this.hitMarker.visible = false;
     this.mesh.position.set(0, -0.65, 0);
     this.mesh.rotation.set(0, this.rotationY, 0);
     this.scene.add(this.mesh);
+
+    this.hitMarker = new THREE.Mesh(
+      new THREE.SphereGeometry(10, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff00ff })
+    );
+    this.scene.add(this.hitMarker);
+    this.hitMarker.visible = false;
   }
 
   addCanvasEvents() {
@@ -143,7 +120,7 @@ this.hitMarker.visible = false;
       if (e.touches.length > 0) {
         updateMousePosition(e.touches[0].pageX, e.touches[0].pageY, this);
       }
-    }, { passive: true }); // ✅ This allows page scrolling
+    }, { passive: true });
 
     const updateMousePosition = (eX, eY, viz) => {
       const x = eX - container.offsetLeft;
@@ -154,87 +131,48 @@ this.hitMarker.visible = false;
   }
 
   render() {
-    const radiusLerpSpeed = 0.05;
-    const oldRadius = this.tubeRadius;
-    this.tubeRadius += (this.tubeRadiusTarget - this.tubeRadius) * radiusLerpSpeed;
+    this.radiusCurrent += (this.radiusTarget - this.radiusCurrent) * 0.1;
+    this.material.uniforms.u_radius.value = this.radiusCurrent;
 
-// Only rebuild geometry if the radius changed meaningfully
-if (Math.abs(this.tubeRadius - oldRadius) > 0.001) {
-  this.updateTubeGeometry();
-}
-
-  
     this.material.uniforms.u_time.value = 1.3 * this.clock.getElapsedTime();
 
-  // Smooth interpolate mouse
-  this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.1;
-  this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.1;
+    this.mouse.x += (this.mouseTarget.x - this.mouse.x) * 0.1;
+    this.mouse.y += (this.mouseTarget.y - this.mouse.y) * 0.1;
 
-  // Mouse movement delta
-  this.mouseDelta.copy(this.mouseTarget).sub(this.prevMouse).multiplyScalar(0.5);
-  this.prevMouse.copy(this.mouseTarget);
+    this.mouseDelta.copy(this.mouseTarget).sub(this.prevMouse).multiplyScalar(0.5);
+    this.prevMouse.copy(this.mouseTarget);
 
-  // Raycast to floor
-  this.raycaster.setFromCamera(this.mouse, this.camera);
-  const intersects = this.raycaster.intersectObject(this.floor);
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const intersects = this.raycaster.intersectObject(this.floor);
 
-  if (intersects.length > 0) {
-    const point = intersects[0].point;
-    const local = this.floor.worldToLocal(point.clone());
+    if (intersects.length > 0) {
+      const point = intersects[0].point;
+      const local = this.floor.worldToLocal(point.clone());
 
-    // Floor size is 2000 x 1000
-    const u = (local.x / 2000) + 0.5;
-    const v = (local.y / 1000) + 0.5;
+      const u = (local.x / 2000) + 0.5;
+      const v = (local.y / 1000) + 0.5;
 
-    // Wind based on pointer position (centered)
-    const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
-      .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-      .multiplyScalar(10);
+      const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
+        .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+        .multiplyScalar(5);
 
-    // Wind based on movement
-    const windFromMovement = this.mouseDelta
-      .clone()
-      .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-      .multiplyScalar(10);
+      const windFromMovement = this.mouseDelta
+        .clone()
+        .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
+        .multiplyScalar(5);
 
-    // Combine and smooth
-    const combinedWind = windFromPosition.add(windFromMovement);
-    this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
-  } else {
-    console.warn("❌ No floor hit");
+      const combinedWind = windFromPosition.add(windFromMovement);
+      this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
+
+      this.hitMarker.position.copy(point);
+      this.hitMarker.position.y += 5;
+      this.hitMarker.visible = true;
+    } else {
+      this.hitMarker.visible = false;
+    }
+
+    this.renderer.render(this.scene, this.camera);
   }
-
-if (intersects.length > 0) {
-  const point = intersects[0].point;
-  const local = this.floor.worldToLocal(point.clone());
-
-  // Floor size is 2000 x 1000
-  const u = (local.x / 2000) + 0.5;
-  const v = (local.y / 1000) + 0.5;
-
-  const windFromPosition = new THREE.Vector2(u - 0.5, 0.5 - v)
-    .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-    .multiplyScalar(5);
-
-  const windFromMovement = this.mouseDelta
-    .clone()
-    .rotateAround(new THREE.Vector2(0, 0), this.rotationY)
-    .multiplyScalar(5);
-
-  const combinedWind = windFromPosition.add(windFromMovement);
-  this.material.uniforms.u_wind.value.lerp(combinedWind, 0.1);
-
-  // ✅ Move hit marker to intersection point
-  this.hitMarker.position.copy(point);
-  this.hitMarker.position.y += 5; // lift a little off the floor
-  this.hitMarker.visible = true;
-} else {
-  console.warn("❌ No floor hit");
-  this.hitMarker.visible = false;
-}
-
-  this.renderer.render(this.scene, this.camera);
-}
 
   loop() {
     this.render();
@@ -249,7 +187,6 @@ if (intersects.length > 0) {
   }
 }
 
-// ✅ Initialize everything
 const viz = new Viz();
 const controls = new Controls(viz);
 viz.addCanvasEvents();
@@ -257,14 +194,11 @@ viz.updateSize();
 viz.loop();
 
 window.addEventListener('mousemove', (event) => {
-  // 👇 Skip tornado interaction if mouse is over GUI
   const isOverGUI = event.target.closest('.gui-float');
   if (isOverGUI) return;
-
   const x = (event.clientX / window.innerWidth) * 2 - 1;
   const y = -(event.clientY / window.innerHeight) * 2 + 1;
   viz.mouseTarget.set(x, y);
 });
 
-// ✅ Keep responsive
 window.addEventListener('resize', () => viz.updateSize());

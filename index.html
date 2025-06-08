@@ -84,6 +84,7 @@
     uniform float u_curl;
     uniform vec2 u_wind;
     uniform float u_mouse_delta;
+    uniform float u_radius;
 
     varying float vStripes;
     varying float vOpacity;
@@ -146,6 +147,10 @@
       pos += (vec3(wind.x, 0., wind.y) * (1. - cone));
       wind += u_wind;
       pos += vec3(wind.x, 0., wind.y) * cubic_pulse_shape(.35, .8, y_factor);
+
+      vec3 newPosition = position;
+      newPosition.xy *= u_radius;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
 
       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
     }
