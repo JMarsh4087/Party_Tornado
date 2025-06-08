@@ -4,7 +4,7 @@ import { GUI } from "https://cdn.skypack.dev/lil-gui@0.16.1";
 const container = document.querySelector('.container');
 
 const config = {
-  Height: 2,
+  Danger: 2,
   Density: 4,
   Curl: 15,
 };
@@ -16,7 +16,7 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
-    gui.add(config, 'Height', 1, 2).step(0.01).onChange(v => {
+    gui.add(config, 'Danger', 1, 2).step(0.01).onChange(v => {
       viz.material.uniforms.u_height.value = v;
     });
     gui.add(config, 'Density', 1, 8).step(0.1).onChange(v => {
@@ -79,7 +79,7 @@ this.hitMarker.visible = false;
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         u_time: { value: 0 },
-        u_height: { value: config.Height },
+        u_height: { value: config.Danger },
         u_density: { value: config.Density },
         u_curl: { value: config.Curl },
         u_wind: { value: new THREE.Vector2(0, 0) },
