@@ -27,8 +27,10 @@ class Controls {
 
     // GUI controls
     gui.add(config, 'Danger', 1, 100).step(1).onChange(v => {
-      const scaled = 1 + (v - 1) * (2.5 - 1) / (100 - 1);
-      viz.material.uniforms.u_height.value = scaled;
+        const height = 1 + (v - 1) * (2.5 - 1) / (100 - 1);
+        viz.material.uniforms.u_height.value = height;
+        viz.tubeRadius = 0.2 + (v / 100) * 1.2; // maps 1–100 to 0.2–1.4, adjust as needed
+        viz.updateTubeGeometry();
     });
 
     gui.add(config, 'Intensity', 1, 100).step(1).onChange(v => {
@@ -54,6 +56,7 @@ class Viz {
     this.camera.lookAt(0, 0, 0);
 
     this.rotationY = -0.4 * Math.PI;
+    this.tubeRadius = 0.85;
 
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
@@ -66,6 +69,18 @@ class Viz {
     this.setupScene();
     this.render();
   }
+updateTubeGeometry() {
+  const curve = new THREE.LineCurve3(
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0, 1, 0)
+  );
+
+  const newGeometry = new THREE.TubeGeometry(curve, 640, this.tubeRadius, 640, false);
+
+  // Replace geometry
+  this.mesh.geometry.dispose();  // Clean up old geometry
+  this.mesh.geometry = newGeometry;
+}
 
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
