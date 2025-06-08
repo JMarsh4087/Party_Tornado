@@ -16,13 +16,13 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
-    gui.add(config, 'Danger', 1, 2).step(0.01).onChange(v => {
+    gui.add(config, 'Height', 1, 2).step(0.01).onChange(v => {
       viz.material.uniforms.u_height.value = v;
     });
-    gui.add(config, 'Intensity', 1, 8).step(0.1).onChange(v => {
+    gui.add(config, 'Density', 1, 8).step(0.1).onChange(v => {
       viz.material.uniforms.u_density.value = v;
     });
-    gui.add(config, 'Speed', 5, 25).step(0.1).onChange(v => {
+    gui.add(config, 'Curl', 5, 25).step(0.1).onChange(v => {
       viz.material.uniforms.u_curl.value = v;
     });
   }
