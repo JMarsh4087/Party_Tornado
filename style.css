@@ -55,13 +55,17 @@ canvas {
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none;
   z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   padding-top: 40px;
+  pointer-events: none; /* <- keep this to ignore clicks generally */
+}
+
+.ui-overlay * {
+  pointer-events: auto; /* <- enable interaction for all children like buttons */
 }
 
 h1, h3 {
