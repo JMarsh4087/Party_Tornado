@@ -72,6 +72,11 @@ h1, h3 {
   color: #ffffff;
 }
 
+h1{
+  font-size: 2.5em;
+  margin-top: 20px;
+}
+
 select, input, button {
   background-color: #1e1e1e;
   color: #ffffff;
