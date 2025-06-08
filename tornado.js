@@ -16,24 +16,17 @@ class Controls {
   constructor(viz) {
     if (window.innerWidth < 600) gui.close();
 
-    const folder = gui.addFolder('🌪️Tornado Mayhem🌪️');
-
-    folder.add(config, 'Height', 1, 2).step(0.01).name('Danger').onChange(v => {
+    gui.add(config, 'Danger', 1, 2).step(0.01).onChange(v => {
       viz.material.uniforms.u_height.value = v;
     });
-
-    folder.add(config, 'Density', 1, 8).step(0.1).name('Speed').onChange(v => {
+    gui.add(config, 'Intensity', 1, 8).step(0.1).onChange(v => {
       viz.material.uniforms.u_density.value = v;
     });
-
-    folder.add(config, 'Curl', 5, 25).step(0.1).name('Intensity').onChange(v => {
+    gui.add(config, 'Speed', 5, 25).step(0.1).onChange(v => {
       viz.material.uniforms.u_curl.value = v;
     });
-
-    folder.open(); // optional: auto-expand
   }
 }
-
 
 class Viz {
   constructor() {
@@ -62,7 +55,7 @@ class Viz {
   setupScene() {
     const floorGeometry = new THREE.PlaneGeometry(2000, 1000);
     //const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // black
-    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x444444 }); // for troubleshooting
+    const floorMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 }); // for troubleshooting
     this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
     this.floor.position.set(0, -2, 0);
     this.floor.rotation.set(-0.2 * Math.PI, 0, 0);
