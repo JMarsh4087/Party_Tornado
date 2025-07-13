@@ -110,14 +110,16 @@ function showResults(scoreMap) {
   const ranked = fullScores.sort((a, b) => b[1] - a[1]);
 
   const listItems = ranked.map(([index, score], i) => {
+    const option = OPTIONS[index];
+    const text = typeof option === 'object' ? option.text : option;
+
     let cls = '';
     if (i === 0) cls = 'first';
     else if (i === 1) cls = 'second';
     else if (i === 2) cls = 'third';
+
     const extraClass = score < 0 ? 'veto' : '';
-    const option = OPTIONS[index];
-    const label = typeof option === 'object' ? option.text : option;
-    return `<li class="${cls} ${extraClass}">${label}: ${score} points</li>`;
+    return `<li class="${cls} ${extraClass}">${text}: ${score} points</li>`;
   });
 
   resultsDiv.innerHTML = `<h3>Vote Totals:</h3><ul class="vote-results">${listItems.join('')}</ul>`;
