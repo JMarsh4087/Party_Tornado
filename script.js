@@ -33,11 +33,26 @@ if (!userId) {
 // Render voting options
 function renderOptions() {
   container.innerHTML = '';
+
+  if (!Array.isArray(OPTIONS)) {
+    container.innerHTML = "<p style='color:red;'>OPTIONS not defined.</p>";
+    return;
+  }
+
   OPTIONS.forEach((option, i) => {
     const div = document.createElement('div');
     div.className = 'option';
+
+    // Build label with or without link
+    let labelHTML;
+    if (typeof option === 'object' && option.link) {
+      labelHTML = `<a href="${option.link}" target="_blank" rel="noopener noreferrer">${option.text}</a>`;
+    } else {
+      labelHTML = typeof option === 'object' ? option.text : option;
+    }
+
     div.innerHTML = `
-      <label>${option}</label>
+      <label>${labelHTML}</label>
       <select data-index="${i}">
         <option value="">Choose Rank</option>
         <option value="1">1️⃣ (Yaaaas!)</option>
@@ -47,10 +62,6 @@ function renderOptions() {
       </select>
     `;
     container.appendChild(div);
-    if (!Array.isArray(OPTIONS)) {
-    container.innerHTML = "<p style='color:red;'>OPTIONS not defined.</p>";
-    return;
-    }
   });
 }
 
@@ -71,13 +82,6 @@ const gifLinks = [
   "https://media4.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3cHB3NmJqZW5xenBkN21rMXE0aWZmMTg5azY5eWJpM3JubTBvYm9mayZlcD12MV9naWZzX3NlYXJjaCZjdD1n/cOEHZYZ9l2H182HQbY/giphy.webp",
   "https://media3.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bXpkYXdva2FrZDZkandmMGYybWg4MDUxdGEwN3F4dWY3Z3dza3J1NiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/nM6a5kDV8JhTccIx0g/200.webp"
 ];
-
-/*function renderRandomGif() {
-  const randomIndex = Math.floor(Math.random() * gifLinks.length);
-  const gif = gifLinks[randomIndex];
-  const container = document.getElementById('tornado-gif-container');
-  container.innerHTML = `<img src="${gif}" alt="Tornado" style="width: 200px; display: block; margin: 10px auto;">`;
-}*/
 
 // Get user votes
 function getVotes() {
