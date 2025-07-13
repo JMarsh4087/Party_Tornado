@@ -122,3 +122,19 @@ select, input, button {
 .veto {
   color: red;
 }
+
+a {
+  color: #ffffff; /* white for normal links */
+}
+
+a:visited {
+  color: #bdbdbd; /* gray for visited links */
+}
+
+a:hover {
+  color: #459fff; /* blue on hover */
+}
+
+a:active {
+  color: #ff0000; /* red when clicked */
+}
