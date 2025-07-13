@@ -110,7 +110,7 @@ function showResults(scoreMap) {
   const ranked = fullScores.sort((a, b) => b[1] - a[1]);
 
   const listItems = ranked.map(([index, score], i) => {
-    const option = OPTIONS[index];
+    const option = OPTIONS[parseInt(index)]; // <-- Ensure index is treated as a number
     const text = typeof option === 'object' ? option.text : option;
 
     let cls = '';
