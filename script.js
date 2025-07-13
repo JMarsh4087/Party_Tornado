@@ -115,7 +115,9 @@ function showResults(scoreMap) {
     else if (i === 1) cls = 'second';
     else if (i === 2) cls = 'third';
     const extraClass = score < 0 ? 'veto' : '';
-    return `<li class="${cls} ${extraClass}">${OPTIONS[index]}: ${score} points</li>`;
+    const option = OPTIONS[index];
+    const label = typeof option === 'object' ? option.text : option;
+    return `<li class="${cls} ${extraClass}">${label}: ${score} points</li>`;
   });
 
   resultsDiv.innerHTML = `<h3>Vote Totals:</h3><ul class="vote-results">${listItems.join('')}</ul>`;
@@ -168,7 +170,9 @@ database.ref("votes").on("value", (snapshot) => {
   pickBtn.onclick = () => {
     const choiceIndex = pickWeightedRandom(scores);
     if (choiceIndex !== null) {
-      finalChoiceDiv.innerHTML = `<h3>🏆Winner:</h3><p>${OPTIONS[choiceIndex]}</p>🏆`;
+      const winner = OPTIONS[choiceIndex];
+      const winnerText = typeof winner === 'object' ? winner.text : winner;
+      finalChoiceDiv.innerHTML = `<h3>🏆Winner:</h3><p>${winnerText}</p>🏆`;
     } else {
       finalChoiceDiv.innerHTML = `<p>No votes to pick from.</p>`;
     }
